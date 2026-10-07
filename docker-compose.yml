@@ -23,7 +23,7 @@ services:
     image: parking-lot-backend:${IMAGE_TAG:-latest}
     container_name: parking_lot_backend
     env_file:
-      - ./backend/backend/.env
+      - ./backend/.env
     environment:
       # Dockerfile 의 CMD 가 bash -c 라 이 값이 gunicorn --workers 로 확장된다.
       GUNICORN_WORKERS: "${GUNICORN_WORKERS:-3}"
