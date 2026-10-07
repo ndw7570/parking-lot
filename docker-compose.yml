@@ -34,13 +34,16 @@ services:
       # 리눅스는 이 이름을 기본 제공하지 않아서 host-gateway 를 명시해야 한다.
       # DB_HOST 가 원격 주소면 쓰이지 않으므로 그냥 둬도 무해하다.
       - "host.docker.internal:host-gateway"
-    # ports 를 두지 않는다. 프론트가 치는 경로는 전부 /api 와 /users 로 시작하고
-    # nginx 가 그 둘을 컨테이너 네트워크로 넘기므로, 호스트에 8000 을 꺼낼 이유가
-    # 없다. admin 과 swagger 는 SSH 터널로 접근한다:
-    #   ssh -L 8000:127.0.0.1:8000 ... 는 안 되고 (호스트에 포트가 없으므로)
-    #   docker compose exec 또는 아래처럼 임시로 포트를 띄운다:
-    #   docker run --rm --network parking-lot_default -p 127.0.0.1:8000:8000 ...
-    # 상시 접근이 필요하면 nginx.conf 에 /admin/ 과 /static/ 프록시를 추가한다.
+    ports:
+      # 프론트가 치는 /api 와 /users 는 nginx 가 컨테이너 네트워크로 넘기므로 이
+      # 포트가 없어도 앱은 돈다. 이건 nginx 가 프록시하지 않는 경로 — /admin,
+      # /docs, /schema, /redoc, /static — 를 열어 두기 위한 것이다. 그쪽은
+      # nginx 의 SPA 폴백에 걸려 React 쉘이 200 으로 돌아오므로 5173 으로는 못 쓴다.
+      #
+      # 127.0.0.1 에 묶는 이유: 접두사를 떼면 LAN 과 (포트포워딩된) 외부까지
+      # Django admin 이 열린다. 원격에서 봐야 하면 포트를 여는 대신 터널을 쓴다:
+      #   ssh -L 5174:127.0.0.1:5174 <호스트>
+      - "127.0.0.1:${BACKEND_PORT:-5174}:8000"
     healthcheck:
       # gunicorn 이 포트를 잡았는지만 본다. 별도 health 엔드포인트가 없고
       # slim 이미지에 curl 이 없어서 표준 라이브러리 소켓으로 확인한다.
