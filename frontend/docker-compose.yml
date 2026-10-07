@@ -1,0 +1,61 @@
+# Frontend-only compose. Runs the parking-management SPA on its own, without
+# the db/backend services defined in ../docker-compose.yml.
+#
+#   Production (nginx, built dist):   docker compose --profile prod up --build
+#     -> http://localhost:5173  |  http://namddww.iptime.org:5173
+#
+#   Development (Vite hot-reload):    docker compose --profile dev up --build
+#     -> http://localhost:5173  |  http://namddww.iptime.org:5173
+#
+# Both services are behind a profile and share host port 5173, so only the one
+# whose profile you pass starts — run exactly one at a time.
+#
+# Ports bind to 0.0.0.0, so the app is reachable from the LAN and, with the
+# router forwarding external :5173 to this host, from namddww.iptime.org:5173.
+#
+# The SPA is fully usable standalone. Calls to /api and /users are proxied to a
+# "backend" host if one is reachable on the network; otherwise they 502 (the
+# app still loads). Point at a real backend with BACKEND_ORIGIN (dev) or bake a
+# full URL into the bundle with VITE_API_BASE (prod build arg).
+services:
+  # ------------------------------------------------------------- Production
+  frontend:
+    profiles: ["prod"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # empty = same-origin; nginx proxies /api and /users (see below)
+        VITE_API_BASE: "${VITE_API_BASE:-}"
+    container_name: parking-frontend
+    ports:
+      - "0.0.0.0:5173:80"
+    # Override the image's proxy-to-backend nginx.conf with a standalone one
+    # that starts even when no backend service is present.
+    volumes:
+      - ./nginx.standalone.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: unless-stopped
+
+  # ------------------------------------------------------------- Development
+  frontend-dev:
+    profiles: ["dev"]
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: parking-frontend-dev
+    # Mock mode: no backend needed, opens straight to Home as a demo session.
+    command: ["npm", "run", "dev:mock"]
+    ports:
+      - "0.0.0.0:5173:5173"
+    volumes:
+      - ./src:/app/src
+      - ./index.html:/app/index.html
+      - ./public:/app/public
+    environment:
+      # host.docker.internal reaches a backend running on the host machine.
+      BACKEND_ORIGIN: "${BACKEND_ORIGIN:-http://host.docker.internal:8000}"
+      # extra comma-separated hosts allowed to reach the Vite dev server
+      ALLOWED_HOSTS: "${ALLOWED_HOSTS:-}"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped

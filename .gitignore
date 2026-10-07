@@ -1,0 +1,15 @@
+# 시크릿 — 절대 커밋하지 않는다.
+.env
+.env.local
+backend/backend/.env
+frontend/.env
+frontend/.env.local
+!.env.example
+!**/.env.example
+
+node_modules/
+__pycache__/
+*.pyc
+
+.idea/
+*.log

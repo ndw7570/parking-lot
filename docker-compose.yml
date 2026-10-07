@@ -1,0 +1,67 @@
+# 운영 통합 컴포즈 — frontend(nginx) + backend(Django/gunicorn)
+#
+#   docker compose up -d --build
+#   docker compose logs -f
+#   docker compose down
+#
+# 브라우저는 FRONTEND_PORT 한 곳만 보면 된다. nginx.conf 가 /api 와 /users 를
+# backend:8000 으로 넘기므로 같은 출처가 되고, 그래서 CORS 가 끼지 않는다.
+#
+# DB 는 이 컴포즈 밖의 원격 PostgreSQL 이다. 접속 정보와 Django 설정은
+# backend/backend/.env 에 두고 env_file 로 주입한다. 이미지에는 굽지 않는다
+# (backend/backend/.dockerignore 가 .env 를 제외한다).
+#
+# 포트·태그 같은 컴포즈 레벨 값은 이 파일 옆의 .env 에서 읽는다. .env.example 참고.
+
+name: parking-lot
+
+services:
+  backend:
+    build:
+      context: ./backend/backend
+      dockerfile: Dockerfile
+    image: parking-lot-backend:${IMAGE_TAG:-latest}
+    container_name: parking_lot_backend
+    env_file:
+      - ./backend/backend/.env
+    environment:
+      # Dockerfile 의 CMD 가 bash -c 라 이 값이 gunicorn --workers 로 확장된다.
+      GUNICORN_WORKERS: "${GUNICORN_WORKERS:-3}"
+    ports:
+      # Django admin 과 swagger 직접 접근용. 프론트를 통한 API 호출은 내부
+      # 네트워크로 가므로 이 매핑이 없어도 동작한다. 외부에 열 이유가 없으면
+      # 이 ports 블록을 지우는 쪽이 노출면이 작다.
+      - "${BACKEND_PORT:-5174}:8000"
+    healthcheck:
+      # gunicorn 이 포트를 잡았는지만 본다. 별도 health 엔드포인트가 없고
+      # slim 이미지에 curl 이 없어서 표준 라이브러리 소켓으로 확인한다.
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 8000), 3).close()"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # 빈 값 = same-origin. 절대 URL 을 넣으면 번들에 박히므로, 백엔드가
+        # 다른 호스트에 있을 때만 채운다.
+        VITE_API_BASE: "${VITE_API_BASE:-}"
+    image: parking-lot-frontend:${IMAGE_TAG:-latest}
+    container_name: parking_lot_frontend
+    ports:
+      - "${FRONTEND_PORT:-5173}:80"
+    depends_on:
+      # nginx.conf 는 upstream 을 변수 없이 쓰므로 기동 시점에 backend 가
+      # DNS 로 풀려야 한다. 안 그러면 nginx 가 그대로 죽는다.
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
