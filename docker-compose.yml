@@ -7,11 +7,13 @@
 # 브라우저는 FRONTEND_PORT 한 곳만 보면 된다. nginx.conf 가 /api 와 /users 를
 # backend:8000 으로 넘기므로 같은 출처가 되고, 그래서 CORS 가 끼지 않는다.
 #
-# DB 는 이 컴포즈 밖의 원격 PostgreSQL 이다. 접속 정보와 Django 설정은
-# backend/backend/.env 에 두고 env_file 로 주입한다. 이미지에는 굽지 않는다
-# (backend/backend/.dockerignore 가 .env 를 제외한다).
+# DB 는 이 컴포즈가 띄우지 않는다. 접속 정보와 Django 설정은 backend/.env 에
+# 두고 env_file 로 주입한다. 이미지에는 굽지 않는다 — backend/.dockerignore 가
+# .env 를 제외하므로, 시크릿은 런타임에만 들어간다.
 #
-# 포트·태그 같은 컴포즈 레벨 값은 이 파일 옆의 .env 에서 읽는다. .env.example 참고.
+# .env 가 두 개인데 층이 다르다:
+#   이 파일 옆의 .env  -> compose 가 ${VAR} 치환에 쓴다. 컨테이너에 안 들어간다.
+#   backend/.env       -> env_file 로 컨테이너 환경변수가 된다. Django 가 읽는다.
 
 name: parking-lot
 
@@ -27,11 +29,18 @@ services:
     environment:
       # Dockerfile 의 CMD 가 bash -c 라 이 값이 gunicorn --workers 로 확장된다.
       GUNICORN_WORKERS: "${GUNICORN_WORKERS:-3}"
-    ports:
-      # Django admin 과 swagger 직접 접근용. 프론트를 통한 API 호출은 내부
-      # 네트워크로 가므로 이 매핑이 없어도 동작한다. 외부에 열 이유가 없으면
-      # 이 ports 블록을 지우는 쪽이 노출면이 작다.
-      - "${BACKEND_PORT:-5174}:8000"
+    extra_hosts:
+      # DB 가 같은 호스트에서 돌 때 컨테이너가 호스트를 찾아가는 길.
+      # 리눅스는 이 이름을 기본 제공하지 않아서 host-gateway 를 명시해야 한다.
+      # DB_HOST 가 원격 주소면 쓰이지 않으므로 그냥 둬도 무해하다.
+      - "host.docker.internal:host-gateway"
+    # ports 를 두지 않는다. 프론트가 치는 경로는 전부 /api 와 /users 로 시작하고
+    # nginx 가 그 둘을 컨테이너 네트워크로 넘기므로, 호스트에 8000 을 꺼낼 이유가
+    # 없다. admin 과 swagger 는 SSH 터널로 접근한다:
+    #   ssh -L 8000:127.0.0.1:8000 ... 는 안 되고 (호스트에 포트가 없으므로)
+    #   docker compose exec 또는 아래처럼 임시로 포트를 띄운다:
+    #   docker run --rm --network parking-lot_default -p 127.0.0.1:8000:8000 ...
+    # 상시 접근이 필요하면 nginx.conf 에 /admin/ 과 /static/ 프록시를 추가한다.
     healthcheck:
       # gunicorn 이 포트를 잡았는지만 본다. 별도 health 엔드포인트가 없고
       # slim 이미지에 curl 이 없어서 표준 라이브러리 소켓으로 확인한다.
@@ -54,6 +63,15 @@ services:
     container_name: parking_lot_frontend
     ports:
       - "${FRONTEND_PORT:-5173}:80"
+      # --- HTTPS 전환 시 ---
+      # 인증서를 발급한 뒤 아래 3줄의 주석을 풀고 위 5173 줄을 지운다.
+      # 인증서가 없는 상태로 ssl 설정을 올리면 nginx 가 기동에 실패한다.
+      # - "80:80"
+      # - "443:443"
+    # volumes:
+    #   - ./frontend/nginx.ssl.conf:/etc/nginx/conf.d/default.conf:ro
+    #   - /etc/letsencrypt:/etc/letsencrypt:ro
+    #   - ./certbot-webroot:/var/www/certbot
     depends_on:
       # nginx.conf 는 upstream 을 변수 없이 쓰므로 기동 시점에 backend 가
       # DNS 로 풀려야 한다. 안 그러면 nginx 가 그대로 죽는다.

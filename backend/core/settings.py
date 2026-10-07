@@ -91,6 +91,16 @@ CORS_ALLOWED_ORIGINS = env.list("DJANGO_CORS_ALLOWED_ORIGINS", default=[])
 # DEBUG=False 에서 admin 로그인 같은 POST 가 통과하려면 출처를 scheme 까지 적어야 한다.
 CSRF_TRUSTED_ORIGINS = env.list("DJANGO_CSRF_TRUSTED_ORIGINS", default=[])
 
+# TLS 는 앞단 nginx 가 끊고 내부로는 평문으로 넘어온다. 이 설정이 없으면 Django 가
+# 자신을 http 로 알아 리다이렉트가 http 로 나가고 CSRF 출처 검사가 어긋난다.
+# nginx.conf 가 X-Forwarded-Proto 를 넣어 주는 것을 전제로 한다.
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# https 로 전환한 뒤에 켠다. http 로 서비스하는 동안 켜면 쿠키가 전송되지 않아
+# 로그인이 되지 않는다.
+SESSION_COOKIE_SECURE = env.bool("DJANGO_SECURE_COOKIES", default=False)
+CSRF_COOKIE_SECURE = env.bool("DJANGO_SECURE_COOKIES", default=False)
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
