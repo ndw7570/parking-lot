@@ -18,7 +18,7 @@ name: parking-lot
 services:
   backend:
     build:
-      context: ./backend/backend
+      context: ./backend
       dockerfile: Dockerfile
     image: parking-lot-backend:${IMAGE_TAG:-latest}
     container_name: parking_lot_backend
