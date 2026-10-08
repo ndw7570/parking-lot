@@ -4,6 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#0b3d91" />
+    <meta name="description" content="입주민 차량·방문차량·무단주차를 관리하는 주차 관리 앱" />
+
+    <!-- 홈 화면 설치용. manifest 는 vite-plugin-pwa 가 빌드 때 주입한다. -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <!-- iOS 는 manifest 의 display 를 늦게 받아들였다. 이 태그가 있어야 구버전에서도
+         주소창 없이 뜬다. -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <!-- black-translucent 는 쓰지 않는다. 그러면 콘텐츠가 상태바 밑으로 파고드는데
+         app.css 가 safe-area-inset-top 을 다루지 않아 앱바가 가려진다. -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="주차관리" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
