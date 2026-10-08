@@ -8,7 +8,12 @@ const BACKEND = process.env.BACKEND_ORIGIN || "http://localhost:8000";
 
 // Hosts allowed to reach the dev server (Vite blocks unknown Host headers).
 // Extendable via ALLOWED_HOSTS="a.com,b.com"; the DDNS host is allowed by default.
+//
+// DDNS 이름이 바뀔 때마다 여기서 막혀 왔다. 그래서 개별 호스트만이 아니라 쓰는
+// DDNS 제공자의 와일드카드를 함께 둔다. 앞의 점이 서브도메인 전체를 뜻한다.
 const ALLOWED_HOSTS = [
+  "parking-lot.duckdns.org",
+  ".duckdns.org",
   "namddww.iptime.org",
   ".iptime.org",
   ...(process.env.ALLOWED_HOSTS || "").split(",").map((h) => h.trim()).filter(Boolean),
