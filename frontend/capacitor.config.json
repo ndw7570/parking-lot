@@ -1,0 +1,5 @@
+{
+  "appId": "com.parkingdesk.app",
+  "appName": "주차관리",
+  "webDir": "dist"
+}

@@ -83,6 +83,13 @@ export const IconBack = (p) => (
   </svg>
 );
 
+export const IconCamera = (p) => (
+  <svg {...base} {...p}>
+    <path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 011 1v9a1 1 0 01-1 1H4a1 1 0 01-1-1V9a1 1 0 011-1z" />
+    <circle cx="12" cy="13" r="3.5" />
+  </svg>
+);
+
 export const IconPhone = (p) => (
   <svg {...base} {...p}>
     <path d="M6 4h3l1.5 4-2 1.5a11 11 0 005 5l1.5-2 4 1.5v3a2 2 0 01-2.2 2A16 16 0 014 6.2 2 2 0 016 4z" />

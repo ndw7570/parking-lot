@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Shell, AppBar } from "../components/ui";
 import { Field } from "../components/form";
-import { IconSearch, IconPhone, IconCar } from "../components/Icons";
+import { IconSearch, IconPhone, IconCar, IconCamera } from "../components/Icons";
 import { vehicleApi, visitantApi } from "../api/resources";
+import { canScanPlate, scanPlate } from "../lib/plateScanner";
 import { decideVerdict, VERDICT, PARKING_TYPE, plateSearchParams } from "../lib/domain";
 
 // 조회된 차량의 parking_type 을 그대로 판정으로 매핑한다.
@@ -34,7 +35,30 @@ export default function Verify() {
 
   async function run(e) {
     e?.preventDefault();
-    const q = plate.trim();
+    await lookup(plate.trim());
+  }
+
+  // 앱(Android)에서만: 카메라로 읽은 번호를 입력칸에 채우고 바로 조회한다.
+  // 입력칸에 남겨 두는 건 오인식이면 사람이 고쳐 다시 조회할 수 있게 하려는 것이다.
+  async function scan() {
+    setError(null);
+    let read;
+    try {
+      read = await scanPlate();
+    } catch (err) {
+      setError(
+        err?.code === "PERMISSION_DENIED"
+          ? "카메라 권한을 허용해야 번호판을 읽을 수 있습니다."
+          : "카메라를 열지 못했습니다. 번호를 직접 입력해 주세요."
+      );
+      return;
+    }
+    if (!read) return; // 사용자가 닫음 -> 직접 입력
+    setPlate(read);
+    await lookup(read);
+  }
+
+  async function lookup(q) {
     if (!q) return;
     setBusy(true);
     setResult(null);
@@ -125,6 +149,19 @@ export default function Verify() {
         <button className="btn primary" disabled={busy || !plate.trim()}>
           {busy ? "조회 중…" : "권한 조회"}
         </button>
+        {canScanPlate() && (
+          // 결과가 나온 뒤에는 [거주민에게 전화]가 시안이다. 화면에 시안 버튼을 둘 두지 않는다.
+          <button
+            type="button"
+            className={`btn ${result ? "ghost" : "signal"}`}
+            style={{ marginTop: 10 }}
+            disabled={busy}
+            onClick={scan}
+          >
+            <IconCamera width={19} height={19} />
+            {result ? "다시 찍기" : "카메라로 번호판 읽기"}
+          </button>
+        )}
       </form>
 
       {error && (

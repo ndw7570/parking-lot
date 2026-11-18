@@ -46,6 +46,22 @@ npm run preview      # 빌드 결과 미리보기
 
 ---
 
+## Android 앱 (Capacitor)
+
+같은 화면을 Android 앱으로 감싸고, 앱에서만 **카메라 실시간 번호판 인식**을 붙인다(권한 확인 화면의 [카메라로 번호판 읽기]).
+
+```bash
+npm run build:android    # .env.android(서버 절대 주소)로 빌드 -> android/ 로 복사
+npx cap open android     # Android Studio 에서 열어 실기기 실행
+cd android && ./gradlew test   # 번호판 판별 단위 테스트 (JDK 21 필요)
+```
+
+- 인식 코드: `android/app/src/main/java/com/parkingdesk/app/plate/` (Kotlin, CameraX + ML Kit 한국어). JS 래퍼: `src/lib/plateScanner.js`.
+- **JDK 21** 로 빌드한다. 최신 Android Studio 내장 JDK(25)로는 이 Gradle 버전이 실패한다.
+- 앱 화면은 `https://localhost` 에서 열린다. 서버 CORS 허용 목록에 이 주소가 있어야 API 가 된다.
+- 앱 ID `com.parkingdesk.app` 은 임시다. Play 스토어 출시 전 `android/app/build.gradle` 의 `applicationId` 를 확정한다(출시 후 변경 불가).
+- 서명 키(`*.jks`)는 저장소에 넣지 않는다.
+
 ## 백엔드 연결 설정
 
 프론트는 항상 `/api/...`, `/users/...` 로 호출합니다. 이 요청을 어디로 보낼지 두 가지 방식이 있습니다.
