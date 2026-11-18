@@ -75,6 +75,9 @@ services:
     #   - ./frontend/nginx.ssl.conf:/etc/nginx/conf.d/default.conf:ro
     #   - /etc/letsencrypt:/etc/letsencrypt:ro
     #   - ./certbot-webroot:/var/www/certbot
+    #   # 테스트 APK 내려받기(/download/, 아이디·비밀번호). 둘 다 저장소에 넣지 않는다.
+    #   - ./downloads:/srv/downloads:ro
+    #   - ./secrets/htpasswd-download:/etc/nginx/htpasswd-download:ro
     depends_on:
       # nginx.conf 는 upstream 을 변수 없이 쓰므로 기동 시점에 backend 가
       # DNS 로 풀려야 한다. 안 그러면 nginx 가 그대로 죽는다.
