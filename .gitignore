@@ -13,3 +13,20 @@ __pycache__/
 
 .idea/
 *.log
+
+# 빌드 산출물 - 배포 이미지(frontend/Dockerfile)가 직접 빌드한다. 커밋하면 빌드마다 변경이 생긴다.
+frontend/dist/
+
+# Android (Capacitor) 빌드 산출물·로컬 설정
+frontend/android/.gradle/
+frontend/android/build/
+frontend/android/app/build/
+frontend/android/local.properties
+frontend/android/.idea/
+*.apk
+*.aab
+
+# 앱 서명 키 - 절대 커밋하지 않는다. 잃거나 새면 같은 앱으로 업데이트를 못 올린다.
+*.jks
+*.keystore
+keystore.properties
