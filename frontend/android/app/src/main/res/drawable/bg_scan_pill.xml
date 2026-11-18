@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- "직접 입력" 알약 버튼. 앱바 네이비(navy-900)를 반투명으로, 얇은 흰 테두리. -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="#40FFFFFF">
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="28dp" />
+            <solid android:color="#B3071A3A" />
+            <stroke android:width="1dp" android:color="#59FFFFFF" />
+        </shape>
+    </item>
+</ripple>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 카메라 위 원형 아이콘 버튼. 반투명 검정이라 밝은 화면에서도 흰 아이콘이 보인다. 누르면 물결. -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="#40FFFFFF">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#73000000" />
+        </shape>
+    </item>
+</ripple>
