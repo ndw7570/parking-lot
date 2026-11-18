@@ -44,9 +44,9 @@ def android_app_download(request) -> HttpResponse:
     except signing.BadSignature:  # 만료(SignatureExpired)도 여기로 온다
         return HttpResponse("다운로드 링크가 만료되었거나 올바르지 않습니다. 앱에서 다시 받아 주세요.",
                             status=403, content_type="text/plain; charset=utf-8")
-    name = settings.APP_DOWNLOAD_ANDROID_FILE
     response = HttpResponse(content_type=_APK_MIME)
-    response["X-Accel-Redirect"] = f"/protected-downloads/{name}"
-    response["Content-Disposition"] = f'attachment; filename="{name}"'
+    response["X-Accel-Redirect"] = f"/protected-downloads/{settings.APP_DOWNLOAD_ANDROID_FILE}"
+    # 첨부(Content-Disposition) 헤더는 nginx 가 파일이 있을 때만 붙인다. 여기서 붙이면 파일이 없을 때
+    # 404 응답에도 따라가, 폰 브라우저가 오류 문구 대신 "사이트에 연결할 수 없음"을 띄운다.
     response["Cache-Control"] = "no-store"
     return response

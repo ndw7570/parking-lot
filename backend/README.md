@@ -42,6 +42,8 @@ API: `/api/parking/<리소스>/` (vehicle, user-profile, dong-ho, visitant, unau
 
 - 파일은 서버의 `downloads/` 폴더(compose 로 `/srv/downloads` 에 마운트), 이름은 `APP_DOWNLOAD_ANDROID_FILE`(기본 `parkingdesk.apk`).
 - nginx 의 `/protected-downloads/` 는 `internal` 이라 주소를 알아도 직접 못 연다.
+- 첨부(`Content-Disposition`) 헤더는 **nginx 만** 붙이고 파일이 있을 때만 붙인다. Django 가 붙이면 파일이 없을 때 404 에도 따라가 폰에서 "사이트에 연결할 수 없음"이 뜨고, 파일이 있을 때는 헤더가 두 번 붙어 Chrome 이 받기를 거부한다.
+- 파일이 없으면 "앱 파일이 아직 서버에 없습니다" 404 를 돌려준다.
 - 링크 유효 시간 `APP_DOWNLOAD_LINK_MAX_AGE`(초, 기본 300).
 
 ## 실행

@@ -34,8 +34,9 @@ class AppDownloadTests(TestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res["X-Accel-Redirect"], "/protected-downloads/parkingdesk.apk")
-        self.assertEqual(res["Content-Type"], "application/vnd.android.package-archive")
-        self.assertIn("attachment", res["Content-Disposition"])
+        # 첨부 헤더는 nginx 가 파일이 있을 때만 붙인다. 여기서 붙이면 파일이 없을 때 404 에도 따라가
+        # 브라우저가 오류 페이지 대신 "사이트에 연결할 수 없음"을 띄운다(실제 발생, P005-015).
+        self.assertNotIn("Content-Disposition", res)
 
     def test_missing_or_forged_token_is_rejected(self):
         self.assertEqual(APIClient().get(DOWNLOAD).status_code, 403)
