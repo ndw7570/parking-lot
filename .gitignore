@@ -34,3 +34,5 @@ keystore.properties
 # 배포용 APK 한 개만 예외로 올린다. 서버가 git pull 로 받아 /srv/downloads 로 마운트한다.
 # (위 *.apk 규칙보다 뒤에 있어야 예외가 먹는다. 빌드 산출물 APK 는 계속 제외)
 !downloads/parkingdesk.apk
+# 번호판 인식 진단용 실사진(개인정보) - 저장소에 올리지 않는다
+frontend/android/app/src/androidTest/assets/night/

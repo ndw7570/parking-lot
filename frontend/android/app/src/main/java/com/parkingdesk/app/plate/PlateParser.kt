@@ -30,6 +30,21 @@ object PlateParser {
             .distinct()
     }
 
+    /**
+     * 한글 자리만 다시 읽은 결과로 번호를 맞춘다(HangulRescue 가 부른다).
+     * [reread] 는 앞 숫자 2번째 뒤부터 뒤 4자리 앞까지를 읽은 글자라, 한글 앞에 숫자가 하나 있으면
+     * 앞자리가 3자리다. 숫자는 처음 읽은 [front]·[back] 을 믿는다 - 작게 자른 그림에서는 숫자를 더 틀린다.
+     */
+    fun compose(front: String, reread: String, back: String): String? {
+        val text = reread.filter { it.isDigit() || it in '가'..'힣' }
+        val at = text.indexOfFirst { it in PLATE_HANGUL }
+        if (at < 0) return null
+        val frontLen = 2 + text.take(at).count(Char::isDigit)
+        if (frontLen > 3 || frontLen > front.length) return null
+        val plate = front.take(frontLen) + text[at] + back
+        return plate.takeIf { PLATE.matches(it) }
+    }
+
     private fun normalize(raw: String): String =
         raw.uppercase()
             .map { LOOK_ALIKES[it] ?: it }

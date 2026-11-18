@@ -1,6 +1,8 @@
 package com.parkingdesk.app.plate
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.os.Bundle
 import android.util.Log
 import android.util.Size
@@ -24,6 +26,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.parkingdesk.app.R
+import com.google.android.gms.tasks.Tasks
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
@@ -128,34 +131,55 @@ class ScanActivity : AppCompatActivity() {
         }, ContextCompat.getMainExecutor(this))
     }
 
+    // 분석 스레드에서 끝까지 기다리며 처리한다. 한글 다시 읽기(HangulRescue)가 장면 그림을 써야 해서
+    // 장면을 닫기 전에 두 번째 인식까지 마쳐야 한다. 장면을 닫아야 다음 장면이 들어온다 - 실패해도 닫는다.
     @OptIn(ExperimentalGetImage::class)
     private fun analyze(proxy: ImageProxy) {
-        val media = proxy.image
-        if (media == null || finished) {
-            proxy.close()
-            return
-        }
-        val wantTorch = synchronized(autoTorch) { autoTorch.onFrame(lumaOf(proxy)) }
-        if (wantTorch != torchOn) runOnUiThread { applyTorch(wantTorch) }
+        try {
+            val media = proxy.image ?: return
+            if (finished) return
+            val wantTorch = synchronized(autoTorch) { autoTorch.onFrame(lumaOf(proxy)) }
+            if (wantTorch != torchOn) runOnUiThread { applyTorch(wantTorch) }
 
-        val roi = guideBoxInImage(proxy)
-        val rotation = proxy.imageInfo.rotationDegrees
-        val size = "${proxy.width}x${proxy.height}"
-        val input = InputImage.fromMediaImage(media, rotation)
-        recognizer.process(input)
-            .addOnSuccessListener { text ->
-                val all = text.textBlocks.flatMap { it.lines }
-                // 박스 밖 글자(간판, 다른 차 번호)는 버린다.
-                val inside = all.filter { isInside(it, roi) }.map { it.text }
-                val candidates = PlateParser.findPlates(inside)
-                val confirmed = stabilizer.feed(candidates)
+            val roi = guideBoxInImage(proxy)
+            val rotation = proxy.imageInfo.rotationDegrees
+            val text = Tasks.await(recognizer.process(InputImage.fromMediaImage(media, rotation)))
+            val all = text.textBlocks.flatMap { it.lines }
+            // 박스 밖 글자(간판, 다른 차 번호)는 버린다.
+            val insideLines = all.filter { isInside(it, roi) }
+            val inside = insideLines.map { it.text }
+            val direct = PlateParser.findPlates(inside)
+            val candidates = direct.ifEmpty {
+                val upright = if (HangulRescue.hasCandidate(insideLines)) uprightBitmap(proxy) else null
+                upright?.let { HangulRescue.rescue(insideLines, it, recognizer) }.orEmpty()
+            }
+            val confirmed = stabilizer.feed(candidates)
+            val status = progressText(inside, candidates)
+            Log.d(TAG, "image=${proxy.width}x${proxy.height} rot=$rotation roi=$roi all=${all.map { it.text }} inside=$inside direct=$direct plates=$candidates")
+            runOnUiThread {
                 guide.setDetected(candidates.isNotEmpty())
-                showProgress(inside, candidates)
-                Log.d(TAG, "image=$size rot=$rotation roi=$roi all=${all.map { it.text }} inside=$inside plates=$candidates")
+                guide.setStatus(status)
                 confirmed?.let(::finishWith)
             }
-            // 장면을 닫아야 다음 장면이 들어온다. 실패해도 닫는다.
-            .addOnCompleteListener { proxy.close() }
+        } catch (e: Exception) {
+            Log.w(TAG, "analyze failed", e)
+        } finally {
+            proxy.close()
+        }
+    }
+
+    // ML Kit 좌표는 회전을 적용한 그림 기준이라 그림도 같은 방향으로 세운다.
+    // 크기가 장면과 다르면(기기마다 변환 방식이 다를 수 있음) 좌표가 어긋나므로 다시 읽기를 건너뛴다.
+    private fun uprightBitmap(proxy: ImageProxy): Bitmap? {
+        val raw = proxy.toBitmap()
+        if (raw.width != proxy.width || raw.height != proxy.height) {
+            Log.w(TAG, "bitmap ${raw.width}x${raw.height} != image ${proxy.width}x${proxy.height}, skip rescue")
+            return null
+        }
+        val degrees = proxy.imageInfo.rotationDegrees
+        if (degrees == 0) return raw
+        val turn = Matrix().apply { postRotate(degrees.toFloat()) }
+        return Bitmap.createBitmap(raw, 0, 0, raw.width, raw.height, turn, true)
     }
 
     /** 화면의 가이드 박스를 ML Kit 좌표(회전 적용된 이미지)로. */
@@ -176,16 +200,15 @@ class ScanActivity : AppCompatActivity() {
     }
 
     // 박스 아래 진행 문구. 읽은 원문은 로그(PlateScan)에만 남기고 화면에는 사용자 말로.
-    private fun showProgress(inside: List<String>, candidates: List<String>) {
+    // stabilizer 는 분석 스레드에서만 만진다. 문구는 거기서 만들어 화면 스레드로 넘긴다.
+    private fun progressText(inside: List<String>, candidates: List<String>): String {
         val leader = stabilizer.leader()
-        guide.setStatus(
-            when {
-                leader != null && candidates.isNotEmpty() ->
-                    "${leader.first}  확인 중 ${leader.second}/${stabilizer.requiredHits}"
-                inside.isNotEmpty() -> "번호판을 찾는 중…"
-                else -> ""
-            },
-        )
+        return when {
+            leader != null && candidates.isNotEmpty() ->
+                "${leader.first}  확인 중 ${leader.second}/${stabilizer.requiredHits}"
+            inside.isNotEmpty() -> "번호판을 찾는 중…"
+            else -> ""
+        }
     }
 
     private fun lumaOf(proxy: ImageProxy): Int {
