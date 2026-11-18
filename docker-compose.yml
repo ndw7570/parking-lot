@@ -71,12 +71,15 @@ services:
       # 인증서가 없는 상태로 ssl 설정을 올리면 nginx 가 기동에 실패한다.
       # - "80:80"
       # - "443:443"
-    # volumes:
-    #   - ./frontend/nginx.ssl.conf:/etc/nginx/conf.d/default.conf:ro
-    #   - /etc/letsencrypt:/etc/letsencrypt:ro
-    #   - ./certbot-webroot:/var/www/certbot
-    #   # Android 앱(APK) 폴더. 로그인한 사람만 받는다(/api/app/android/). 저장소에 넣지 않는다.
-    #   - ./downloads:/srv/downloads:ro
+    volumes:
+      # Android 앱(APK) 폴더. 로그인한 사람만 받는다(/api/app/android/).
+      # downloads/parkingdesk.apk 는 git 으로 내려온다. 운영에서 항상 쓰므로 주석 밖에 둔다.
+      - ./downloads:/srv/downloads:ro
+      # --- HTTPS 를 이 컨테이너가 직접 맡을 때만 아래 주석을 푼다 ---
+      # 지금 운영은 서버 본체의 nginx 가 HTTPS 를 맡고 이 컨테이너로 넘겨준다(README 배포 구조).
+      # - ./frontend/nginx.ssl.conf:/etc/nginx/conf.d/default.conf:ro
+      # - /etc/letsencrypt:/etc/letsencrypt:ro
+      # - ./certbot-webroot:/var/www/certbot
     depends_on:
       # nginx.conf 는 upstream 을 변수 없이 쓰므로 기동 시점에 backend 가
       # DNS 로 풀려야 한다. 안 그러면 nginx 가 그대로 죽는다.
