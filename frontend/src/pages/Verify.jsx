@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Shell, AppBar } from "../components/ui";
 import { Field } from "../components/form";
 import { IconSearch, IconPhone, IconCar, IconCamera } from "../components/Icons";
@@ -32,6 +32,17 @@ export default function Verify() {
   const [result, setResult] = useState(null); // { verdict, vehicle, owner }
   const [notFound, setNotFound] = useState(false);
   const [error, setError] = useState(null); // 조회 실패(400/네트워크) — '미등록'과 구분
+
+  // 홈의 카메라 버튼으로 들어오면(?scan=1) 바로 촬영을 연다. 한 번만 열고 주소에서 표시를 지운다 -
+  // 남겨 두면 다른 화면에 갔다 돌아올 때마다 카메라가 다시 열린다.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const autoScanned = useRef(false);
+  useEffect(() => {
+    if (autoScanned.current || searchParams.get("scan") !== "1") return;
+    autoScanned.current = true;
+    setSearchParams({}, { replace: true });
+    if (canScanPlate()) scan();
+  }, [searchParams, setSearchParams]); // eslint-disable-line react-hooks/exhaustive-deps -- scan 은 매 렌더 새로 만들어지지만 한 번만 부른다
 
   async function run(e) {
     e?.preventDefault();

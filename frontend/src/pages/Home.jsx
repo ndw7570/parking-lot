@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Shell, AppBar, Loading, AccountButton } from "../components/ui";
-import { IconCar, IconGate, IconUsers, IconMoto, IconAlert } from "../components/Icons";
+import { IconCar, IconGate, IconUsers, IconAlert, IconSearch, IconChevron, IconCamera } from "../components/Icons";
+import { canScanPlate } from "../lib/plateScanner";
 import {
   vehicleApi,
   visitantApi,
@@ -116,6 +117,8 @@ export default function Home() {
         <Loading />
       ) : (
         <>
+          <VerifyEntry onOpen={() => nav("/verify")} onScan={() => nav("/verify?scan=1")} />
+
           <div className="kpi-row">
             <KPI n={stats.total} l="등록 차량" onClick={() => nav("/vehicles?filter=all")} />
             <KPI n={stats.visiting} l="방문 차량" tone="accent" onClick={() => nav("/vehicles?filter=visitor")} />
@@ -172,18 +175,43 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="section-title">권한 확인</div>
-          <button
-            className="btn signal"
-            onClick={() => nav("/verify")}
-            style={{ marginBottom: 4 }}
-          >
-            <IconMoto width={20} height={20} />
-            차량번호로 주차 권한 조회
-          </button>
         </>
       )}
     </Shell>
+  );
+}
+
+// 홈 맨 위의 권한 조회 입구. 이 앱에서 가장 자주 하는 일이라 스크롤 없이 첫 화면에 둔다.
+// 검색창 모양이라 "여기에 번호를 넣는다"가 바로 읽힌다. 앱에서는 오른쪽 카메라로 곧장 촬영.
+function VerifyEntry({ onOpen, onScan }) {
+  const label = (
+    <>
+      <IconSearch width={22} height={22} className="verify-cta-ico" />
+      <span className="verify-cta-text">
+        <span className="t">주차 권한 조회</span>
+        <span className="d">차량번호 입력{canScanPlate() ? " · 카메라로 읽기" : ""}</span>
+      </span>
+    </>
+  );
+  if (!canScanPlate()) {
+    return (
+      <button type="button" className="verify-cta" onClick={onOpen}>
+        {label}
+        <span className="verify-cta-go" aria-hidden>
+          <IconChevron width={20} height={20} />
+        </span>
+      </button>
+    );
+  }
+  return (
+    <div className="verify-cta">
+      <button type="button" className="verify-cta-main" onClick={onOpen}>
+        {label}
+      </button>
+      <button type="button" className="verify-cta-go" onClick={onScan} aria-label="카메라로 번호판 읽기">
+        <IconCamera width={22} height={22} />
+      </button>
+    </div>
   );
 }
 
