@@ -61,6 +61,7 @@ cd android && ./gradlew test   # 번호판 판별 단위 테스트 (JDK 21 필�
 - 앱 화면은 `https://localhost` 에서 열린다. 서버 CORS 허용 목록에 이 주소가 있어야 API 가 된다.
 - 앱 ID `com.parkingdesk.app` 은 임시다. Play 스토어 출시 전 `android/app/build.gradle` 의 `applicationId` 를 확정한다(출시 후 변경 불가).
 - 서명 키(`*.jks`)는 저장소에 넣지 않는다.
+- **배포(테스트)**: 빌드한 APK 를 서버 `downloads/parkingdesk.apk` 로 올리면, 웹에 로그인한 사람이 마이페이지 [Android 앱 받기]로 받는다(`../backend/README.md` 앱 내려받기).
 
 ## 백엔드 연결 설정
 

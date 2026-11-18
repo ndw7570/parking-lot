@@ -5,6 +5,7 @@ import { Field, TextInput } from "../components/form";
 import { dongHoApi, userProfileApi, vehicleApi } from "../api/resources";
 import { authApi, getCurrentUserId } from "../api/auth";
 import { buildMyOverview, formatPhoneNumber } from "../lib/domain";
+import { androidAppDownloadUrl, canDownloadAndroidApp } from "../lib/appDownload";
 
 // 서버에 "내 요약" 전용 API 가 없어 세대·차량 목록에서 내 것을 고른다(P005-010).
 // 전용 API 가 생기면 이 함수 본문만 바꾸면 된다.
@@ -16,6 +17,15 @@ async function fetchMyOverview(username) {
 export default function MyPage() {
   const nav = useNavigate();
   const toast = useToast();
+
+  // 5분짜리 서명 링크를 받아 그 주소로 이동하면 브라우저가 APK 를 내려받는다.
+  async function downloadAndroidApp() {
+    try {
+      window.location.assign(await androidAppDownloadUrl());
+    } catch {
+      toast("앱 다운로드 링크를 받지 못했습니다. 다시 로그인한 뒤 시도해 주세요.", "err");
+    }
+  }
   const username = getCurrentUserId();
   const [loading, setLoading] = useState(true);
   const [hasProfile, setHasProfile] = useState(false);
@@ -169,6 +179,18 @@ export default function MyPage() {
             </div>
           ) : (
             <div className="muted" style={{ padding: "4px 2px" }}>보유 차량이 없습니다.</div>
+          )}
+
+          {canDownloadAndroidApp() && (
+            <>
+              <div className="section-title" style={{ marginTop: 18 }}>앱</div>
+              <button type="button" className="btn ghost" onClick={downloadAndroidApp}>
+                Android 앱 받기
+              </button>
+              <div className="muted" style={{ fontSize: 12, margin: "6px 2px 0" }}>
+                카메라로 번호판을 바로 읽을 수 있습니다. 설치할 때 "출처를 알 수 없는 앱" 허용이 필요합니다.
+              </div>
+            </>
           )}
 
           <div className="section-title" style={{ marginTop: 18 }}>계정</div>

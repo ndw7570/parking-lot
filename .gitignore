@@ -31,6 +31,5 @@ frontend/android/.idea/
 *.keystore
 keystore.properties
 
-# 서버 전용: 테스트 APK 배포 폴더와 다운로드 비밀번호 파일 (frontend/nginx.ssl.conf /download/)
+# 서버 전용: Android 앱(APK) 배포 폴더 (frontend/nginx.ssl.conf /protected-downloads/)
 downloads/
-secrets/

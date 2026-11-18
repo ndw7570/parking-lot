@@ -33,6 +33,17 @@ API: `/api/parking/<리소스>/` (vehicle, user-profile, dong-ho, visitant, unau
 - **조회 조건**: 허용 목록 밖의 쿼리 파라미터는 400. 차량 번호는 `plate_number`(정확 일치, 중복 검사용)와 `plate_number_contains`(부분 검색)를 구분한다.
 - **전체 목록**: `?no_page=1` 이면 페이지를 나누지 않는다(프론트 기본). 페이지 크기 상한은 200.
 
+## Android 앱 내려받기
+
+로그인한 사람만 받는다. 일반 링크는 로그인 토큰을 실을 수 없어 두 단계다.
+
+1. `POST /api/app/android/link/` (로그인 필요) -> 5분짜리 서명 링크 `{ url }`
+2. `GET /api/app/android/download/?t=...` -> 서명이 맞으면 nginx 가 파일을 보낸다(`X-Accel-Redirect: /protected-downloads/<파일>`)
+
+- 파일은 서버의 `downloads/` 폴더(compose 로 `/srv/downloads` 에 마운트), 이름은 `APP_DOWNLOAD_ANDROID_FILE`(기본 `parkingdesk.apk`).
+- nginx 의 `/protected-downloads/` 는 `internal` 이라 주소를 알아도 직접 못 연다.
+- 링크 유효 시간 `APP_DOWNLOAD_LINK_MAX_AGE`(초, 기본 300).
+
 ## 실행
 
 환경변수는 `.env.example` 참고(비밀값은 저장소에 넣지 않는다).

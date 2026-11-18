@@ -30,6 +30,7 @@ from rest_framework_simplejwt.views import (
 from django.urls import path
 from rest_framework.permissions import AllowAny
 from users.views import RegisterView
+from core.views.app_download import AndroidAppLinkView, android_app_download
 
 urlpatterns = [
     path("admin", admin.site.urls),
@@ -37,6 +38,9 @@ urlpatterns = [
 
     # Users
     path("users/", include("users.urls")),
+    # 로그인한 사람만 Android 앱(APK)을 받는다 (P005-015). 파일 전송은 nginx(X-Accel-Redirect).
+    path("api/app/android/link/", AndroidAppLinkView.as_view(), name="android_app_link"),
+    path("api/app/android/download/", android_app_download, name="android_app_download"),
     path("users/auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("users/auth/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("users/auth/verify/", TokenVerifyView.as_view(), name="token_verify"),

@@ -141,6 +141,11 @@ WSGI_APPLICATION = "core.wsgi.application"
 # env(json)에서 ACTIVE_DB값을 찾음, 없으면 default 사용
 ACTIVE_DB = env("ACTIVE_DB", default="dev")
 
+# Android 앱 내려받기 (core/views/app_download.py). 파일은 nginx 의 /protected-downloads/ 폴더에 둔다.
+APP_DOWNLOAD_ANDROID_FILE = env("APP_DOWNLOAD_ANDROID_FILE", default="parkingdesk.apk")
+# 서명 링크 유효 시간(초). 링크가 메신저 등으로 퍼져도 금방 쓸모없어지게 짧게 둔다.
+APP_DOWNLOAD_LINK_MAX_AGE = env.int("APP_DOWNLOAD_LINK_MAX_AGE", default=300)
+
 DATABASES = {
     "prod": {
         "ENGINE": "django.db.backends.postgresql",
