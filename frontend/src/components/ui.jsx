@@ -92,12 +92,12 @@ export function AppBar({ title, sub, back, right }) {
 }
 
 /* ------------------------------------------------------------ Tab bar */
-// 홈을 가운데에 둔다. 순찰 중 한 손으로 쓰는 앱이라 엄지가 가장 쉽게 닿는 자리이고,
-// 순찰에서 자주 여는 "차량"과 "무단주차"가 홈 양옆에 온다(P005-018).
+// 홈은 맨 왼쪽(대부분의 앱과 플랫폼 지침의 관례). 가운데로 옮겼다가 되돌렸다(P005-018) -
+// 사용자는 "홈 = 왼쪽 아래"를 기대하고, 가운데 자리는 홈이 아니라 핵심 행동에 쓰는 자리다.
 const TABS = [
+  { to: "/", label: "홈", Icon: IconHome, end: true },
   { to: "/vehicles", label: "차량", Icon: IconCar },
   { to: "/residents", label: "거주민", Icon: IconUsers },
-  { to: "/", label: "홈", Icon: IconHome, end: true },
   { to: "/unauthorized", label: "무단주차", Icon: IconAlert },
   { to: "/board", label: "게시판", Icon: IconBoard },
 ];
