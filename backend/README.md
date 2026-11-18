@@ -40,7 +40,8 @@ API: `/api/parking/<리소스>/` (vehicle, user-profile, dong-ho, visitant, unau
 1. `POST /api/app/android/link/` (로그인 필요) -> 5분짜리 서명 링크 `{ url }`
 2. `GET /api/app/android/download/?t=...` -> 서명이 맞으면 nginx 가 파일을 보낸다(`X-Accel-Redirect: /protected-downloads/<파일>`)
 
-- 파일은 서버의 `downloads/` 폴더(compose 로 `/srv/downloads` 에 마운트), 이름은 `APP_DOWNLOAD_ANDROID_FILE`(기본 `parkingdesk.apk`).
+- 파일은 저장소의 `downloads/parkingdesk.apk` 에 커밋해 git pull 로 서버에 내린다(compose 로 `/srv/downloads` 에 마운트). 이름은 `APP_DOWNLOAD_ANDROID_FILE`(기본 `parkingdesk.apk`).
+- 새 APK: `cd frontend && npm run build:android` -> `cd android && ./gradlew assembleDebug` -> `app/build/outputs/apk/debug/app-debug.apk` 를 `downloads/parkingdesk.apk` 로 복사해 커밋. GitHub 파일 한도 100MB.
 - nginx 의 `/protected-downloads/` 는 `internal` 이라 주소를 알아도 직접 못 연다.
 - 첨부(`Content-Disposition`) 헤더는 **nginx 만** 붙이고 파일이 있을 때만 붙인다. Django 가 붙이면 파일이 없을 때 404 에도 따라가 폰에서 "사이트에 연결할 수 없음"이 뜨고, 파일이 있을 때는 헤더가 두 번 붙어 Chrome 이 받기를 거부한다.
 - 파일이 없으면 "앱 파일이 아직 서버에 없습니다" 404 를 돌려준다.
