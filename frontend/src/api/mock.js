@@ -130,6 +130,12 @@ function decorate(path, row) {
 // Public mock API — mirrors the shape used by resources.js / auth.js
 // ---------------------------------------------------------------------------
 export const mockApi = {
+  // 둘러보기를 새로 시작하거나 끝낼 때 방문자가 바꾼 데이터를 버리고 처음 데모 데이터로.
+  reset() {
+    db = seed();
+    persist();
+  },
+
   async list(path, params = {}) {
     await delay();
     const key = TABLE[path];

@@ -10,6 +10,8 @@ import {
   IconUser,
 } from "./Icons";
 import { NotificationBell } from "./NotificationBell";
+import { authApi } from "../api/auth";
+import { isDemo } from "../api/config";
 
 /* ------------------------------------------------------------ Toast */
 const ToastCtx = createContext(() => {});
@@ -119,10 +121,28 @@ export function TabBar() {
 }
 
 /* ------------------------------------------------------------ Shell */
+// 둘러보기 중임을 알리는 한 줄. 가짜 데이터를 실제로 오해하지 않게 모든 화면 위에 둔다.
+function DemoBanner() {
+  const nav = useNavigate();
+  const leave = () => {
+    authApi.endDemo();
+    nav("/login", { replace: true });
+  };
+  return (
+    <div className="demo-banner" role="status">
+      <span>데모 구경 중 · 실제 데이터가 아닙니다</span>
+      <button type="button" onClick={leave}>
+        로그인
+      </button>
+    </div>
+  );
+}
+
 export function Shell({ children, bar, hideTabs }) {
   return (
     <div className="app-shell">
       {bar}
+      {isDemo() && <DemoBanner />}
       <main className="page">{children}</main>
       {!hideTabs && <TabBar />}
     </div>

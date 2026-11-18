@@ -1,15 +1,5 @@
 // P005-004: 관리자는 계정 플래그로만 판정한다. 아이디 문자열은 근거가 아니다.
-import { describe, expect, it, vi } from "vitest";
-
-// auth.js -> mock.js 가 불러오는 순간 localStorage 를 읽는다. Node 테스트 환경에는 없다.
-vi.hoisted(() => {
-  const store = new Map();
-  globalThis.localStorage = {
-    getItem: (k) => (store.has(k) ? store.get(k) : null),
-    setItem: (k, v) => store.set(k, String(v)),
-    removeItem: (k) => store.delete(k),
-  };
-});
+import { describe, expect, it } from "vitest";
 
 import { isAdminUser } from "./auth";
 

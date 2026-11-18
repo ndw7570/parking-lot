@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const post = vi.fn();
 const isNativePlatform = vi.fn();
 vi.mock("../api/client", () => ({ default: { post: (...a) => post(...a) } }));
-vi.mock("../api/config", () => ({ MOCK: false }));
+vi.mock("../api/config", () => ({ isDemo: () => false }));
 vi.mock("@capacitor/core", () => ({ Capacitor: { isNativePlatform: () => isNativePlatform() } }));
 
 import { canDownloadAndroidApp, androidAppDownloadUrl } from "./appDownload";

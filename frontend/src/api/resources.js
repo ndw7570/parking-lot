@@ -1,5 +1,5 @@
 import client from "./client";
-import { MOCK } from "./config";
+import { isDemo } from "./config";
 import { mockApi } from "./mock";
 
 // The Django project mounts the parking router under: /api/parking + router.urls
@@ -44,38 +44,38 @@ function crud(path) {
      * @returns {Promise<object[]>}
      */
     async list(params = {}) {
-      if (MOCK) return mockApi.list(path, params);
+      if (isDemo()) return mockApi.list(path, params);
       const { data } = await client.get(`${base}/`, { params: { ...params, no_page: 1 } });
       return unwrapList(data);
     },
     async get(id) {
-      if (MOCK) return mockApi.get(path, id);
+      if (isDemo()) return mockApi.get(path, id);
       const { data } = await client.get(`${base}/${id}/`);
       return unwrapItem(data);
     },
     async create(payload) {
-      if (MOCK) return mockApi.create(path, payload);
+      if (isDemo()) return mockApi.create(path, payload);
       const { data } = await client.post(`${base}/`, payload);
       return unwrapItem(data);
     },
     async update(id, payload) {
-      if (MOCK) return mockApi.update(path, id, payload);
+      if (isDemo()) return mockApi.update(path, id, payload);
       const { data } = await client.put(`${base}/${id}/`, payload);
       return unwrapItem(data);
     },
     async patch(id, payload) {
-      if (MOCK) return mockApi.patch(path, id, payload);
+      if (isDemo()) return mockApi.patch(path, id, payload);
       const { data } = await client.patch(`${base}/${id}/`, payload);
       return unwrapItem(data);
     },
     // Restore a soft-deleted row: PATCH {base}/{id}/restore/
     async restore(id) {
-      if (MOCK) return mockApi.restore(path, id);
+      if (isDemo()) return mockApi.restore(path, id);
       const { data } = await client.patch(`${base}/${id}/restore/`);
       return unwrapItem(data);
     },
     async remove(id) {
-      if (MOCK) return mockApi.remove(path, id);
+      if (isDemo()) return mockApi.remove(path, id);
       // Standard REST delete. Soft-delete is the BACKEND's job: its destroy()
       // should set is_deleted=true (not hard-delete), filter is_deleted=false in
       // list querysets, and return 200/204 (the current 500 is a backend bug).

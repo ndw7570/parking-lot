@@ -802,6 +802,46 @@ textarea {
   color: var(--navy-700);
 }
 
+/* Demo browsing (P005-014) — 한 줄짜리 띠와 로그인 화면의 작은 링크.
+   작은 글자라 시안(대비 3.6)이 아니라 muted/네이비 + 밑줄로 링크임을 보인다. */
+.demo-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 5px 12px;
+  background: var(--warn-soft);
+  color: var(--text);
+  font-size: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.demo-banner button {
+  border: none;
+  background: none;
+  padding: 2px 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--navy-700);
+  text-decoration: underline;
+}
+.text-link {
+  display: block;
+  margin: 14px auto 0;
+  border: none;
+  background: none;
+  padding: 8px;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.text-link:focus-visible,
+.demo-banner button:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.001ms !important;

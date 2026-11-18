@@ -83,6 +83,8 @@ const pwa = VitePWA({
 
 export default defineConfig({
   plugins: [react(), pwa],
+  // vitest: 브라우저 저장소 흉내 (src/test/setupStorage.js)
+  test: { setupFiles: ["./src/test/setupStorage.js"] },
   server: {
     host: "0.0.0.0",
     port: 5173,

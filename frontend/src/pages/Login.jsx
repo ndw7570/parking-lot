@@ -14,6 +14,17 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
 
+  // 가짜 데이터로 들어간다. 실제 서버는 부르지 않는다.
+  async function startDemo() {
+    setBusy(true);
+    try {
+      await authApi.startDemo();
+      nav("/", { replace: true });
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function submit(e) {
     e.preventDefault();
     if (!username.trim()) {
@@ -116,6 +127,13 @@ export default function Login() {
       >
         관리실 계정은 부여받은 관리자 아이디로 로그인하세요.
       </p>
+
+      {/* 둘러보기(P005-014): 로그인 화면의 위계를 건드리지 않게 맨 아래 작은 글자 링크로만. */}
+      {!MOCK && (
+        <button type="button" className="text-link" disabled={busy} onClick={startDemo}>
+          로그인 없이 데모 구경하기
+        </button>
+      )}
     </div>
   );
 }

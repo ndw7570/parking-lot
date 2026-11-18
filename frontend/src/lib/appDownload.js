@@ -1,13 +1,13 @@
 import { Capacitor } from "@capacitor/core";
 import client from "../api/client";
-import { MOCK } from "../api/config";
+import { isDemo } from "../api/config";
 
 /**
- * 웹에서만 [Android 앱 받기]를 보여 준다. 앱 안에서는 이미 앱이고, 목(데모) 모드에는 서버가 없다.
+ * 웹에서만 [Android 앱 받기]를 보여 준다. 앱 안에서는 이미 앱이고, 데모(둘러보기)에는 서버가 없다.
  * @returns {boolean}
  */
 export function canDownloadAndroidApp() {
-  return !MOCK && !Capacitor.isNativePlatform();
+  return !isDemo() && !Capacitor.isNativePlatform();
 }
 
 /**
