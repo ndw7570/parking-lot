@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Shell, AppBar } from "../components/ui";
 import { Field } from "../components/form";
 import { IconSearch, IconPhone, IconCar, IconCamera } from "../components/Icons";
 import { vehicleApi, visitantApi } from "../api/resources";
 import { canScanPlate, scanPlate } from "../lib/plateScanner";
+import { isDemo } from "../api/config";
+import { PlateScanDemo } from "../components/PlateScanDemo";
 import { decideVerdict, VERDICT, PARKING_TYPE, plateSearchParams } from "../lib/domain";
 
 // 조회된 차량의 parking_type 을 그대로 판정으로 매핑한다.
@@ -28,6 +30,7 @@ export default function Verify() {
   const nav = useNavigate();
   const [plate, setPlate] = useState("");
   const [busy, setBusy] = useState(false);
+  const [demoScanOpen, setDemoScanOpen] = useState(false);
   const [candidates, setCandidates] = useState([]); // multiple LIKE matches to pick from
   const [result, setResult] = useState(null); // { verdict, vehicle, owner }
   const [notFound, setNotFound] = useState(false);
@@ -68,6 +71,14 @@ export default function Verify() {
     setPlate(read);
     await lookup(read);
   }
+
+  // 웹 데모 전용 인식 체험(P005-019): 예시 번호를 채우고 실제 앱처럼 바로 조회한다.
+  const finishDemoScan = useCallback((plateNo) => {
+    setDemoScanOpen(false);
+    setPlate(plateNo);
+    lookup(plateNo);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- lookup 은 상태 setter 만 쓴다
+  const closeDemoScan = useCallback(() => setDemoScanOpen(false), []);
 
   async function lookup(q) {
     if (!q) return;
@@ -173,6 +184,20 @@ export default function Verify() {
             {result ? "다시 찍기" : "카메라로 번호판 읽기"}
           </button>
         )}
+        {!canScanPlate() && isDemo() && (
+          // 웹 데모에서만. 앱에서는 진짜 카메라 인식이 있으니 보이지 않는다.
+          <button
+            type="button"
+            className={`btn ${result ? "ghost" : "signal"}`}
+            style={{ marginTop: 10 }}
+            disabled={busy}
+            onClick={() => setDemoScanOpen(true)}
+          >
+            <IconCamera width={19} height={19} />
+            번호판 인식 체험
+          </button>
+        )}
+        {demoScanOpen && <PlateScanDemo onDone={finishDemoScan} onClose={closeDemoScan} />}
       </form>
 
       {error && (

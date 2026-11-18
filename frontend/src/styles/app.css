@@ -924,6 +924,116 @@ button.verify-cta-go:focus-visible {
   border-radius: 4px;
 }
 
+/* Plate scan demo (P005-019) — 웹 데모 전용 인식 체험. 앱 인식 화면(activity_scan.xml)과 같은 배치:
+   위 닫기 / 가운데 박스(위 안내, 아래 진행 알약) / 아래 직접 입력. 480px 틀 안에 덮는다. */
+.scan-demo {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(120% 80% at 50% 45%, #3a3f47 0%, #15181d 70%);
+  color: #fff;
+}
+.scan-demo-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: calc(14px + env(safe-area-inset-top, 0px)) 16px 0;
+}
+.scan-demo-circle {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 18px;
+}
+.scan-demo-tag {
+  margin-left: auto;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--warn-soft);
+  color: var(--text);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.scan-demo-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 7.5%;
+}
+.scan-demo-hint {
+  margin: 0 0 18px;
+  font-size: 16px;
+  font-weight: 700;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+.scan-demo-box {
+  --corner: #fff;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 1;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(var(--corner), var(--corner)) top left / 28px 4px,
+    linear-gradient(var(--corner), var(--corner)) top left / 4px 28px,
+    linear-gradient(var(--corner), var(--corner)) top right / 28px 4px,
+    linear-gradient(var(--corner), var(--corner)) top right / 4px 28px,
+    linear-gradient(var(--corner), var(--corner)) bottom left / 28px 4px,
+    linear-gradient(var(--corner), var(--corner)) bottom left / 4px 28px,
+    linear-gradient(var(--corner), var(--corner)) bottom right / 28px 4px,
+    linear-gradient(var(--corner), var(--corner)) bottom right / 4px 28px;
+  background-repeat: no-repeat;
+}
+.scan-demo-box.on {
+  --corner: var(--ok);
+}
+.scan-demo-plate {
+  width: 82%;
+  height: auto;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45));
+}
+.scan-demo-status {
+  min-height: 32px;
+  margin: 18px 0 0;
+}
+.scan-demo-status span {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 16px;
+  background: rgba(7, 26, 58, 0.8);
+  font-size: 14px;
+  font-weight: 700;
+}
+.scan-demo-bottom {
+  display: flex;
+  justify-content: center;
+  padding: 0 16px calc(32px + var(--safe-b));
+}
+.scan-demo-pill {
+  height: 52px;
+  padding: 0 28px;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(7, 26, 58, 0.7);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+}
+.scan-demo-circle:focus-visible,
+.scan-demo-pill:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.001ms !important;
