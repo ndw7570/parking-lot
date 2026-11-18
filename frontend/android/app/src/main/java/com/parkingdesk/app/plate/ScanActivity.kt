@@ -25,6 +25,8 @@ import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
@@ -110,6 +112,12 @@ class ScanActivity : AppCompatActivity() {
             gravity = Gravity.CENTER
             setBackgroundColor(Color.argb(160, 7, 26, 58))
             setPadding(32, 32, 32, 48)
+            // Android 15 부터 앱이 내비게이션 바 밑까지 그린다. 버튼이 가려지지 않게 그 높이만큼 올린다.
+            ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
+                val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                v.setPadding(32, 32, 32, 48 + bars.bottom)
+                insets
+            }
             addView(hint)
             addView(statusText)
             addView(debugText)
