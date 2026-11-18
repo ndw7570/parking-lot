@@ -13,11 +13,16 @@ class PlateStabilizer(
     /** 확정되면 번호, 아니면 null. */
     fun feed(candidates: List<String>): String? {
         recent = (recent + listOf(candidates.distinct())).takeLast(window)
-        return recent.flatten()
+        return leader()?.takeIf { it.second >= required }?.first
+    }
+
+    /** 지금 가장 많이 읽힌 번호와 횟수. 화면에 "확인 중 (2/3)"을 보여 주는 데 쓴다. */
+    fun leader(): Pair<String, Int>? =
+        recent.flatten()
             .groupingBy { it }
             .eachCount()
-            .filterValues { it >= required }
             .maxByOrNull { it.value }
-            ?.key
-    }
+            ?.toPair()
+
+    val requiredHits: Int get() = required
 }

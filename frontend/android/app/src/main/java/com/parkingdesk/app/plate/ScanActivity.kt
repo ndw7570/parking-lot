@@ -3,6 +3,7 @@ package com.parkingdesk.app.plate
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.util.Size
 import android.view.Gravity
 import android.view.View
@@ -41,6 +42,8 @@ class ScanActivity : AppCompatActivity() {
     private lateinit var previewView: PreviewView
     private lateinit var guide: PlateGuideView
     private lateinit var torchButton: Button
+    private lateinit var statusText: TextView
+    private lateinit var debugText: TextView
     private lateinit var analysisExecutor: ExecutorService
     private val recognizer = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
     private val stabilizer = PlateStabilizer()
@@ -74,6 +77,19 @@ class ScanActivity : AppCompatActivity() {
             textSize = 16f
             gravity = Gravity.CENTER
         }
+        // 지금 무엇을 읽고 있는지 보여 준다. 사용자는 맞추는 데 도움을 받고, 현장 시험 때는
+        // "왜 확정이 안 되나"(박스 밖에서만 읽힘 / 글자는 읽히는데 번호판 형식이 아님)를 바로 알 수 있다.
+        statusText = TextView(this).apply {
+            setTextColor(Color.WHITE)
+            textSize = 15f
+            gravity = Gravity.CENTER
+            setPadding(0, 12, 0, 0)
+        }
+        debugText = TextView(this).apply {
+            setTextColor(Color.argb(170, 255, 255, 255))
+            textSize = 11f
+            gravity = Gravity.CENTER
+        }
         torchButton = Button(this).apply {
             text = TORCH_OFF_LABEL
             visibility = View.GONE // 플래시가 있는 기기에서만 보인다
@@ -95,6 +111,8 @@ class ScanActivity : AppCompatActivity() {
             setBackgroundColor(Color.argb(160, 7, 26, 58))
             setPadding(32, 32, 32, 48)
             addView(hint)
+            addView(statusText)
+            addView(debugText)
             addView(buttons)
         }
         return FrameLayout(this).apply {
@@ -150,12 +168,20 @@ class ScanActivity : AppCompatActivity() {
         if (wantTorch != torchOn) runOnUiThread { applyTorch(wantTorch) }
 
         val roi = guideBoxInImage(proxy)
-        val input = InputImage.fromMediaImage(media, proxy.imageInfo.rotationDegrees)
+        val rotation = proxy.imageInfo.rotationDegrees
+        val size = "${proxy.width}x${proxy.height}"
+        val input = InputImage.fromMediaImage(media, rotation)
         recognizer.process(input)
             .addOnSuccessListener { text ->
-                val candidates = PlateParser.findPlates(linesInside(text, roi))
+                val all = text.textBlocks.flatMap { it.lines }
+                // 박스 밖 글자(간판, 다른 차 번호)는 버린다.
+                val inside = all.filter { isInside(it, roi) }.map { it.text }
+                val candidates = PlateParser.findPlates(inside)
+                val confirmed = stabilizer.feed(candidates)
                 guide.setDetected(candidates.isNotEmpty())
-                stabilizer.feed(candidates)?.let(::finishWith)
+                showProgress(inside, candidates, all.size)
+                Log.d(TAG, "image=$size rot=$rotation roi=$roi all=${all.map { it.text }} inside=$inside plates=$candidates")
+                confirmed?.let(::finishWith)
             }
             // 장면을 닫아야 다음 장면이 들어온다. 실패해도 닫는다.
             .addOnCompleteListener { proxy.close() }
@@ -173,14 +199,22 @@ class ScanActivity : AppCompatActivity() {
         return PlateRoi.inVisible(visible, guide.boxWidthRatio, guide.boxHeightRatio)
     }
 
-    // 박스 밖 글자(간판, 다른 차 번호)는 버린다.
-    private fun linesInside(text: Text, roi: Box): List<String> =
-        text.textBlocks.flatMap { it.lines }
-            .filter { line ->
-                val b = line.boundingBox ?: return@filter false
-                PlateRoi.contains(roi, Box(b.left, b.top, b.right, b.bottom))
-            }
-            .map { it.text }
+    private fun isInside(line: Text.Line, roi: Box): Boolean {
+        val b = line.boundingBox ?: return false
+        return PlateRoi.contains(roi, Box(b.left, b.top, b.right, b.bottom))
+    }
+
+    private fun showProgress(inside: List<String>, candidates: List<String>, total: Int) {
+        val leader = stabilizer.leader()
+        statusText.text = when {
+            leader != null && candidates.isNotEmpty() ->
+                "${leader.first} 확인 중 (${leader.second}/${stabilizer.requiredHits})"
+            inside.isNotEmpty() -> "글자 인식: " + inside.joinToString(" ").take(24)
+            else -> ""
+        }
+        // 현장 시험용 진단: 전체는 읽히는데 박스 안이 계속 0이면 박스 위치 계산 문제다.
+        debugText.text = "박스 안 ${inside.size}줄 / 전체 ${total}줄"
+    }
 
     private fun lumaOf(proxy: ImageProxy): Int {
         val plane = proxy.planes[0]
@@ -222,5 +256,6 @@ class ScanActivity : AppCompatActivity() {
         private const val WRAP = FrameLayout.LayoutParams.WRAP_CONTENT
         private const val TORCH_OFF_LABEL = "플래시 켜기"
         private const val TORCH_ON_LABEL = "플래시 끄기"
+        private const val TAG = "PlateScan"
     }
 }

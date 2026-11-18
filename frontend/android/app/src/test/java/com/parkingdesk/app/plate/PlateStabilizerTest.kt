@@ -29,6 +29,17 @@ class PlateStabilizerTest {
     }
 
     @Test
+    fun `reports the leading candidate and its count for on-screen progress`() {
+        val s = PlateStabilizer(window = 5, required = 3)
+        assertNull(s.leader())
+
+        s.feed(listOf("12가3456"))
+        s.feed(listOf("12가3456", "34나5678"))
+
+        assertEquals("12가3456" to 2, s.leader())
+    }
+
+    @Test
     fun `a one-off misread does not win`() {
         val s = PlateStabilizer(window = 5, required = 3)
 
