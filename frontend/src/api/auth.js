@@ -13,14 +13,11 @@ export function getCurrentUserId() {
 export function meIdentity(me) {
   return String(me?.username ?? me?.user_id ?? "");
 }
+// 관리자는 계정 플래그로만 판정한다. 서버(core/permissions.py)와 같은 기준이어야 한다.
+// 아이디에 "관리자"가 들어 있다는 이유로 관리자로 보지 않는다 - 가입 때 누구나 그렇게 지을 수 있다.
+// role 은 목(데모) 모드의 me() 만 준다.
 export function isAdminUser(me) {
-  return Boolean(
-    me?.is_superuser ||
-      me?.is_staff ||
-      me?.role === "admin" ||
-      me?.is_super_admin ||
-      me?.username?.includes("관리자")
-  );
+  return Boolean(me?.is_superuser || me?.is_staff || me?.role === "admin" || me?.is_super_admin);
 }
 
 // Demo/mock mode only: seed a session synchronously so the app opens straight

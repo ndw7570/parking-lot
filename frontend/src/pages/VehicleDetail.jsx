@@ -29,7 +29,8 @@ export default function VehicleDetail() {
       try {
         const [v, visitants, dongHos, unauthorized, allVehicles] = await Promise.all([
           vehicleApi.get(id),
-          visitantApi.list().catch(() => []),
+          // 실패는 null 로 구분한다. [] 로 바꾸면 방문차가 "만료 → 무단"으로 보인다.
+          visitantApi.list().catch(() => null),
           dongHoApi.list().catch(() => []),
           unauthorizedApi.list().catch(() => []),
           vehicleApi.list().catch(() => []),
@@ -52,7 +53,7 @@ export default function VehicleDetail() {
             ? dongHos.find((d) => String(d.dong_ho_id) === String(v.users.dong_ho_id))
             : dongHos.find((d) => String(d.user) === String(v?.user));
           setDongHo(matchedDongHo || null);
-          setVisitant(visitants.find((item) => String(item.vehicle) === String(v?.vehicle_id)) || null);
+          setVisitant((visitants ?? []).find((item) => String(item.vehicle) === String(v?.vehicle_id)) || null);
           setUnauthorizedRecord(
             unauthorized.find(
               (item) =>

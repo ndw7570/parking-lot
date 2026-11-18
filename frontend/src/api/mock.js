@@ -7,6 +7,7 @@
 // ---------------------------------------------------------------------------
 
 import { buildSeed } from "./mockData";
+import { getCurrentUserId } from "./auth";
 
 // All demo data lives in ONE place — see mockData.js. seed() just derives the
 // relational tables from it. Bump LS_KEY whenever that data shape changes so
@@ -151,8 +152,10 @@ export const mockApi = {
         rows = rows.filter((r) => String(r[field] ?? "") !== String(val));
         return;
       }
+      // `field_contains` = 부분 검색(서버 plate_number_contains 와 같은 이름 규칙).
+      const field = k.endsWith("_contains") ? k.slice(0, -"_contains".length) : k;
       rows = rows.filter((r) =>
-        String(r[k] ?? "")
+        String(r[field] ?? "")
           .replace(/\s/g, "")
           .includes(String(val).replace(/\s/g, ""))
       );
@@ -218,7 +221,15 @@ export const mockApi = {
       err.response = { status: 404 };
       throw err;
     }
-    db[key][idx] = { ...db[key][idx], ...payload };
+    const before = db[key][idx];
+    // 백엔드와 같은 규칙: 열린 무단주차 기록을 닫은 사람만 처리자로 남는다.
+    const closing =
+      path === "unauthorized-parking-record" && !before.parking_end_time && payload.parking_end_time;
+    db[key][idx] = {
+      ...before,
+      ...payload,
+      processed_by: closing ? getCurrentUserId() || null : before.processed_by,
+    };
     // 방문권 재발급: valid_hours 오면 start/end 재계산.
     if (path === "visitant" && payload.valid_hours) {
       const start = new Date();

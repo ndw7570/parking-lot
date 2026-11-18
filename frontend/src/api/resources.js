@@ -16,6 +16,7 @@ import { mockApi } from "./mock";
 //   DELETE {base}/{id}/      destroy
 const PARKING = "/api/parking";
 
+
 // DRF list responses may be paginated ({count, next, previous, results}) or a plain array.
 export function unwrapList(data) {
   if (Array.isArray(data)) return data;
@@ -35,11 +36,16 @@ function unwrapItem(data) {
 function crud(path) {
   const base = `${PARKING}/${path}`;
   return {
+    /**
+     * 전체 목록. 화면이 KPI·중복 검사에 전체 집합을 쓰므로 페이지 나누기를 끄고 한 번에 받는다.
+     * page_size 를 크게 주면 서버 상한(200)에서 조용히 잘리고(B-04), 페이지를 이어 받으면
+     * 정렬이 없어 페이지 사이에 행이 겹치거나 빠진다.
+     * @param {Record<string, unknown>} params
+     * @returns {Promise<object[]>}
+     */
     async list(params = {}) {
       if (MOCK) return mockApi.list(path, params);
-      // Fetch the full set (backend paginates at 20 by default). Without this,
-      // callers miss existing rows and create duplicates (e.g. dong-ho by 호수).
-      const { data } = await client.get(`${base}/`, { params: { page_size: 500, ...params } });
+      const { data } = await client.get(`${base}/`, { params: { ...params, no_page: 1 } });
       return unwrapList(data);
     },
     async get(id) {

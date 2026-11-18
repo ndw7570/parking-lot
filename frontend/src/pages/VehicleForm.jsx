@@ -22,6 +22,7 @@ import {
   minutesUntil,
 } from "../lib/domain";
 import { getCurrentUserId, authApi, isAdminUser } from "../api/auth";
+import { backendErrorMessage } from "../lib/apiError";
 
 // Registration modes, driven by ?type=
 const MODES = {
@@ -436,12 +437,18 @@ export default function VehicleForm() {
         return;
       }
     }
+    // vehicle.user is a FK to user_profile (PK e.g. "801호") — NOT the auth
+    // username. form.user is auto-set only when the logged-in id actually
+    // matches a user_profile; otherwise send null (owner assigned later).
+    const ownerId = form.user || null;
+    // 방문 티켓은 호스트 없이 만들 수 없다. 차량을 저장하기 전에 막아야
+    // "차량만 저장되고 티켓은 실패"하는 반쪽 저장이 생기지 않는다(B-05).
+    if (cfg.isVisitor && !ownerId) {
+      toast("방문차량은 로그인한 거주민 기준으로 연결됩니다.", "err");
+      return;
+    }
     setBusy(true);
     try {
-      // vehicle.user is a FK to user_profile (PK e.g. "801호") — NOT the auth
-      // username. form.user is auto-set only when the logged-in id actually
-      // matches a user_profile; otherwise send null (owner assigned later).
-      const ownerId = form.user || null;
       // Matches the vehicle serializer contract (is_deleted is server-managed).
       const vehiclePayload = {
         user: ownerId,
@@ -481,11 +488,6 @@ export default function VehicleForm() {
       }
 
       if (cfg.isVisitor) {
-        if (!ownerId) {
-          toast("방문차량은 로그인한 거주민 기준으로 연결됩니다.", "err");
-          setBusy(false);
-          return;
-        }
         const visitants = await visitantApi.list().catch(() => []);
         const existingVisitant = visitants.find((item) => String(item.vehicle) === String(vehicle.vehicle_id));
         const visitantPayload = {
@@ -519,10 +521,7 @@ export default function VehicleForm() {
     } catch (err) {
       // 백엔드가 주는 메시지 우선(활성 방문권/유효시간 400 등).
       const data = err.response?.data;
-      const backendMsg =
-        (typeof data?.message === "string" && data.message) ||
-        (typeof data?.detail === "string" && data.detail) ||
-        (Array.isArray(data?.valid_hours) && data.valid_hours[0]);
+      const backendMsg = backendErrorMessage(data);
       toast(
         backendMsg ||
           (data ? "저장 실패: 입력값을 확인해 주세요." : "네트워크 오류로 저장하지 못했습니다."),

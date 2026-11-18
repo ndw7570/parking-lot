@@ -12,6 +12,8 @@ class UnauthorizedParkingRecord(SoftDeleteModel):
     parking_location = models.CharField(max_length=100, null=False, blank=True, db_comment="추자위치")
     attachment_file_id = models.IntegerField(null=True, blank=True, db_comment="첨부파일ID")
     remarks = models.TextField(null=True, blank=True, db_comment="비고")
+    # 화면이 "지금 로그인한 사람"을 처리자로 보여 주던 문제(B-06) 때문에 서버가 기록한다.
+    processed_by = models.CharField(max_length=200, null=True, blank=True, db_comment="출차처리자 아이디")
     is_deleted = models.BooleanField(null=False, blank=True, db_comment="삭제여부")
 
     class Meta:

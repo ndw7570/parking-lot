@@ -35,17 +35,20 @@ class VisitantDetailSelectSerializer(SoftDeleteSerializer):
 class VisitantCreateSerializer(SoftDeleteSerializer):
     parking_start_time = serializers.DateTimeField(read_only=True)
     parking_end_time = serializers.DateTimeField(read_only=True)
+    # 모델은 null 을 허용하지만 발급에는 반드시 필요하다. 빠지면 종료 시각을 계산할 수 없다.
+    # PATCH(partial) 에서는 DRF 가 required 를 건너뛰므로 메모만 고치는 수정은 그대로 된다.
+    valid_hours = serializers.IntegerField(required=True)
 
     class Meta:
         model = Visitant
         fields = '__all__'
 
-    def validate_valid_hours(self, value):
+    def validate_valid_hours(self, value: int) -> int:
         if value not in (6, 12, 24):
             raise serializers.ValidationError("가능시간은 6, 12, 24 중 하나여야 합니다.")
         return value
 
-    def validate(self, attrs):
+    def validate(self, attrs: dict) -> dict:
         vehicle = attrs.get('vehicle')
         # update(PATCH)일 때 vehicle이 안 넘어오면 기존 인스턴스에서 가져옴: "memo"값 하나만 바뀌면 vehicle값도 안 넘어오므로
         if not vehicle and self.instance:
@@ -62,7 +65,9 @@ class VisitantCreateSerializer(SoftDeleteSerializer):
             if self.instance:
                 active = active.exclude(pk=self.instance.pk)
 
-            conflict = active.exists()
+            # 남은 시간을 재야 하므로 bool(exists) 이 아니라 행이 필요하다.
+            # 여러 장이면 가장 늦게 끝나는 것이 기준이다.
+            conflict = active.order_by('-parking_end_time').first()
             if conflict:
                 remaining = conflict.parking_end_time - now
                 if remaining.total_seconds() > 30 * 60:

@@ -8,6 +8,10 @@ from core.mixins.pagination import PaginationMixin
 from core.constants.filters import EXISTENCE_FILTER_FIELDS
 from .response import success_response
 from rest_framework.decorators import action
+from rest_framework.settings import api_settings
+from core.permissions import OwnerOrAdminWrite
+from rest_framework.exceptions import ValidationError
+from django.db import IntegrityError, transaction
 
 
 class SoftDeleteViewSet(viewsets.ModelViewSet):
@@ -46,8 +50,16 @@ class SoftDeleteViewSet(viewsets.ModelViewSet):
     def restore(self, request, pk=None):
         model_class = self.queryset.model
         instance = model_class.objects.all_with_deleted().get(pk=pk)
+        # get_object() 를 거치지 않으므로 객체 권한 검사를 직접 부른다. 빠지면 아무나 복구한다.
+        self.check_object_permissions(request, instance)
         instance.is_deleted = False
-        instance.save(update_fields=['is_deleted'])
+        # 조건부 유일 제약(살아 있는 행끼리만 유일)이 있는 모델은 같은 값의 살아 있는 행이
+        # 있으면 복구가 DB 에서 거절된다. 500 대신 이유를 400 으로 돌려준다.
+        try:
+            with transaction.atomic():
+                instance.save(update_fields=['is_deleted'])
+        except IntegrityError:
+            raise ValidationError("같은 값의 데이터가 이미 있어 복구할 수 없습니다.")
         return success_response({'id': instance.pk}, 'Restored successfully.')
 
     def perform_create(self, serializer):
@@ -65,6 +77,20 @@ class BaseCommonViewSet(PaginationMixin, RetrieveDetailSwitchMixin, SoftDeleteVi
     """
     SoftDelete, 필터, list/retrieve별 serializer 및 prefetch/select 분기 공통 지원
     """
+    # 읽기는 로그인만, 쓰기는 관리자 또는 아래 can_* 규칙(core/permissions.py).
+    permission_classes = [*api_settings.DEFAULT_PERMISSION_CLASSES, OwnerOrAdminWrite]
+
+    # 일반 사용자 쓰기 규칙. 기본은 전부 거절 = 관리자 전용. 리소스별 ViewSet 이 덮어쓴다.
+    # me 는 로그인 아이디(= user_profile.user_id 가입 규칙), data 는 요청 본문이다.
+    def can_create(self, me: str, data) -> bool:
+        return False
+
+    def can_change(self, me: str, obj, data) -> bool:
+        return False
+
+    def can_delete(self, me: str, obj) -> bool:
+        return False
+
     FILTER_FIELDS = None
     list_serializer_class = None
     detail_serializer_class = None

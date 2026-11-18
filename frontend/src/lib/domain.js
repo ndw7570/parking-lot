@@ -99,23 +99,59 @@ export const VERDICT_META = {
 };
 
 /**
+ * 이 차량에 아직 끝나지 않은 방문 티켓이 있는가.
+ * 종료 시각을 알 수 없는 티켓은 무효로 본다. 서버 재발급 검사(parking_end_time > now)와
+ * 같은 기준이어야 화면은 "방문", 서버는 "새로 발급 가능"으로 갈리지 않는다.
+ * @param {number|string} vehicleId
+ * @param {Array<object>} visitants
+ * @param {Date} [now]
+ * @returns {boolean}
+ */
+export function hasActiveTicket(vehicleId, visitants = [], now = new Date()) {
+  return visitants.some((v) => {
+    if (v.is_deleted || String(v.vehicle) !== String(vehicleId)) return false;
+    const expiry = visitExpiry(v);
+    return expiry != null && expiry.getTime() > now.getTime();
+  });
+}
+
+// 티켓 목록을 못 읽었을 때. 만료로 단정하면 실제 방문객을 무단으로 몬다.
+const UNKNOWN_VISIT = {
+  verdict: VERDICT.VISITOR,
+  ...VERDICT_META[VERDICT.VISITOR],
+  sub: "방문 티켓 확인 실패 · 다시 조회해 주세요",
+};
+
+const EXPIRED_VISIT = {
+  verdict: VERDICT.UNAUTHORIZED,
+  ...VERDICT_META[VERDICT.UNAUTHORIZED],
+  sub: "방문 시간 만료 · 확인 필요",
+};
+
+/**
  * Decide the verdict for a matched vehicle record.
  * @param {object|null} vehicle  the Vehicle row (may be null if plate not found)
- * @param {Array} visitants      visitant rows for cross-check
+ * @param {Array|null} visitants visitant rows for cross-check. null = 불러오지 못함
+ * @param {Date} [now]
  */
-export function decideVerdict(vehicle, visitants = []) {
+export function decideVerdict(vehicle, visitants = [], now = new Date()) {
   if (!vehicle) {
     return { verdict: VERDICT.UNAUTHORIZED, ...VERDICT_META[VERDICT.UNAUTHORIZED] };
   }
+  if (visitants == null && vehicle.parking_type === PARKING_TYPE.VISITOR) {
+    return UNKNOWN_VISIT;
+  }
+  const tickets = visitants ?? [];
 
   const hasUser = Boolean(vehicle.user);
 
-  // Vehicle is referenced by a visitant record → 방문주차
-  const isVisitorLinked = visitants.some(
-    (v) => String(v.vehicle) === String(vehicle.vehicle_id)
-  );
-  if (isVisitorLinked || vehicle.parking_type === PARKING_TYPE.VISITOR) {
+  // 방문 판정은 "유효한 티켓"이 있을 때만이다. 티켓이 끝났으면 방문 근거가 없다(B-08).
+  if (hasActiveTicket(vehicle.vehicle_id, tickets, now)) {
     return { verdict: VERDICT.VISITOR, ...VERDICT_META[VERDICT.VISITOR] };
+  }
+  // 방문 차량의 user 는 차주가 아니라 호스트다(VehicleForm). 그래서 user 유무와 무관하게 만료다.
+  if (vehicle.parking_type === PARKING_TYPE.VISITOR) {
+    return EXPIRED_VISIT;
   }
 
   // Vehicle has an owner (user_id) → 지정주차
@@ -143,6 +179,33 @@ export function homeStatus(dongHo, today = new Date()) {
   if (start && start > today)
     return { key: "upcoming", label: "입주 예정", tone: "warn" };
   return { key: "occupied", label: "거주 중", tone: "ok" };
+}
+
+/**
+ * 마이페이지 요약: 내가 연결된 세대와 내 차량.
+ * 방문 차량의 user 는 차주가 아니라 호스트라서 보유 차량에서 뺀다.
+ * @param {string} userId
+ * @param {Array<object>} dongHos
+ * @param {Array<object>} vehicles
+ * @returns {{ dong_ho_name: string|null, vehicles: Array<object> }}
+ */
+export function buildMyOverview(userId, dongHos = [], vehicles = []) {
+  const mine = (row) => String(row.user ?? "") === String(userId);
+  const home = dongHos.find(mine);
+  return {
+    dong_ho_name: home?.dong_ho_name ?? null,
+    vehicles: vehicles.filter((v) => mine(v) && v.parking_type !== PARKING_TYPE.VISITOR),
+  };
+}
+
+/**
+ * 권한 확인 화면의 조회 조건. 번호 일부로 찾는다(서버 plate_number_contains).
+ * 정확 일치(plate_number)는 등록 화면의 중복 검사용이라 여기서 쓰지 않는다.
+ * @param {string} input
+ * @returns {{ plate_number_contains: string }}
+ */
+export function plateSearchParams(input) {
+  return { plate_number_contains: normalizePlateNumber(input) };
 }
 
 export function normalizePlateNumber(value = "") {

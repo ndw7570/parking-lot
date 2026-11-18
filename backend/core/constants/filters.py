@@ -9,7 +9,7 @@ EXCLUDE_FROM_STRICT_CHECK = {
     'month',
 
     # 공통 아님
-    'summary'
+    'summary',
     'dup_check',
     'create',
     'mode',
@@ -18,8 +18,11 @@ EXCLUDE_FROM_STRICT_CHECK = {
 }
 
 VEHICLE_FILTER_FIELDS = {
+    # 정확 일치: 차량 등록·무단 접수의 중복 검사가 쓴다. 부분 검색으로 바꾸면 남의 차를 "같은 차"로 본다.
     'plate_number': 'plate_number__exact',
-    'parking_type!': 'plate_number__exact',
+    # 부분 검색: 권한 확인 화면 전용 (P005-013).
+    'plate_number_contains': 'plate_number__icontains',
+    'parking_type': 'parking_type__exact',
 }
 
 

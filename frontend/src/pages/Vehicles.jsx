@@ -36,7 +36,8 @@ export default function Vehicles() {
       try {
         const [v, vis] = await Promise.all([
           vehicleApi.list(),
-          visitantApi.list().catch(() => []),
+          // 실패는 null 로 구분한다. [] 로 바꾸면 방문차가 전부 "만료 → 무단"으로 보인다.
+          visitantApi.list().catch(() => null),
         ]);
         if (alive) {
           setVehicles(v);
@@ -64,7 +65,7 @@ export default function Vehicles() {
         const _verdict = decideVerdict(v, visitants);
         let _remaining = null;
         if (_verdict.verdict === VERDICT.VISITOR) {
-          const vis = visitants.find(
+          const vis = (visitants ?? []).find(
             (x) => String(x.vehicle) === String(v.vehicle_id) && !x.is_deleted
           );
           _remaining = vis ? minutesUntil(visitExpiry(vis)) : null;

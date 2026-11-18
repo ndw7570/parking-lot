@@ -1,3 +1,4 @@
+from parking_management.views.ownership import me_or_nobody, requested, same
 from datetime import timedelta
 from django.utils import timezone
 from parking_management.models.parking.visitant import Visitant
@@ -31,6 +32,16 @@ class VisitantViewSet(BaseCommonViewSet):
     FILTER_FIELDS = VISITANT_FILTER_FIELDS
     list_serializer_class = VisitantListSerializer
     detail_serializer_class = VisitantDetailSelectSerializer
+
+    # 방문 티켓의 호스트 = 본인. 본인이 발급한 티켓만 고치고 지운다.
+    def can_create(self, me, data):
+        return same(requested(data, 'user'), me)
+
+    def can_change(self, me, obj, data):
+        return same(obj.user_id, me) and same(requested(data, 'user', obj.user_id), me)
+
+    def can_delete(self, me, obj):
+        return same(obj.user_id, me)
 
     def get_serializer_class(self):
         if self.action in ('create', 'update', 'partial_update'):

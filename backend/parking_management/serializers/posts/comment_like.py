@@ -1,3 +1,4 @@
+from rest_framework.validators import UniqueTogetherValidator
 from core.serializers.soft_exclusion import SoftDeleteSerializer, SoftWhitelistBaseSerializer
 from parking_management.models.posts.comment_like import CommentLike
 from parking_management.models.posts.comment import Comment
@@ -20,6 +21,11 @@ class CommentLikeListSerializer(SoftDeleteSerializer):
     class Meta:
         model = CommentLike
         fields = '__all__'
+        # DB 제약이 조건부(삭제 안 된 행만)라 DRF 가 자동 검사를 만들지 않는다.
+        # 기본 매니저가 살아 있는 행만 주므로 같은 규칙으로 중복을 400 으로 돌려준다.
+        validators = [
+            UniqueTogetherValidator(queryset=CommentLike.objects.all(), fields=['comment', 'user']),
+        ]
 
 
 class CommentLikeDetailSelectSerializer(SoftDeleteSerializer):

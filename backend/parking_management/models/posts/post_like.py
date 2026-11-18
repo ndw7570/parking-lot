@@ -29,7 +29,12 @@ class PostLike(SoftDeleteModel):
     class Meta:
         db_table = '"parking_lot"."posts_like"'
         constraints = [
-            models.UniqueConstraint(fields=["post", "user"], name="uq_posts_like_post_user"),
+            # 취소(소프트 삭제)한 좋아요가 남아 있어도 다시 누를 수 있도록 살아 있는 행끼리만 유일하게 한다.
+            models.UniqueConstraint(
+                fields=["post", "user"],
+                condition=models.Q(is_deleted=False),
+                name="uq_posts_like_post_user",
+            ),
         ]
 
     def __str__(self):

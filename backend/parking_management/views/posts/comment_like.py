@@ -1,3 +1,4 @@
+from parking_management.views.ownership import me_or_nobody, requested, same
 from parking_management.models.posts.comment_like import CommentLike
 from parking_management.serializers.posts.comment_like import CommentLikeListSerializer
 from parking_management.serializers.posts.comment_like import CommentLikeDetailSelectSerializer
@@ -22,3 +23,10 @@ class CommentLikeViewSet(BaseCommonViewSet):
     FILTER_FIELDS = COMMENT_LIKE_FILTER_FIELDS
     list_serializer_class = CommentLikeListSerializer
     detail_serializer_class = CommentLikeDetailSelectSerializer
+
+    # 좋아요는 본인 이름으로만 누르고 취소한다.
+    def can_create(self, me, data):
+        return same(requested(data, 'user'), me)
+
+    def can_delete(self, me, obj):
+        return same(obj.user_id, me)

@@ -1,3 +1,4 @@
+from parking_management.views.ownership import me_or_nobody, requested, same
 from parking_management.models.parking.user_profile import UserProfile
 from parking_management.serializers.parking.user_profile import UserProfileListSerializer
 from parking_management.serializers.parking.user_profile import UserProfileDetailSelectSerializer
@@ -22,3 +23,10 @@ class UserProfileViewSet(BaseCommonViewSet):
     FILTER_FIELDS = USER_PROFILE_FILTER_FIELDS
     list_serializer_class = UserProfileListSerializer
     detail_serializer_class = UserProfileDetailSelectSerializer
+
+    # 프로필 아이디 = 로그인 아이디(가입 규칙). 본인 프로필만 만들고 고친다.
+    def can_create(self, me, data):
+        return same(requested(data, 'user_id'), me)
+
+    def can_change(self, me, obj, data):
+        return same(obj.pk, me) and same(requested(data, 'user_id', obj.pk), me)

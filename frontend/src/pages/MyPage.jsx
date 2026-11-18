@@ -2,23 +2,15 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Shell, AppBar, useToast, Loading } from "../components/ui";
 import { Field, TextInput } from "../components/form";
-import { userProfileApi } from "../api/resources";
+import { dongHoApi, userProfileApi, vehicleApi } from "../api/resources";
 import { authApi, getCurrentUserId } from "../api/auth";
-import { formatPhoneNumber } from "../lib/domain";
+import { buildMyOverview, formatPhoneNumber } from "../lib/domain";
 
-// 거주 호수 + 보유 차량을 한 번에 주는 백엔드 단일 엔드포인트가 준비되면
-// 이 스텁 본문만 실제 호출로 교체하면 된다. 예:
-//   const { data } = await client.get("/users/me/overview/");  // (unwrap 후) return data;
-// 기대 형태: { dong_ho_name, vehicles: [{ plate_number, vehicle_type, model_name, parking_type }] }
-async function fetchMyOverview(/* username */) {
-  // TODO: 실제 API로 교체 (지금은 더미)
-  return {
-    dong_ho_name: "801호",
-    vehicles: [
-      { plate_number: "12가3456", vehicle_type: "승용차", model_name: "그랜저 IG", parking_type: "거주주차" },
-      { plate_number: "서울1234", vehicle_type: "오토바이", model_name: "PCX", parking_type: "거주주차" },
-    ],
-  };
+// 서버에 "내 요약" 전용 API 가 없어 세대·차량 목록에서 내 것을 고른다(P005-010).
+// 전용 API 가 생기면 이 함수 본문만 바꾸면 된다.
+async function fetchMyOverview(username) {
+  const [dongHos, vehicles] = await Promise.all([dongHoApi.list(), vehicleApi.list()]);
+  return buildMyOverview(username, dongHos, vehicles);
 }
 
 export default function MyPage() {

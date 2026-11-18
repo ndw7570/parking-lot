@@ -111,9 +111,8 @@ export default function Unauthorized() {
               {r.parking_end_time && (
                 <div className="detail-line">
                   <span className="k">처리자</span>
-                  <span className="v">
-                    {processor?.user_name || processor?.username || "관리자"}
-                  </span>
+                  {/* 서버가 출차 처리 때 남긴 아이디. 그 전 기록은 처리자를 모른다. */}
+                  <span className="v">{r.processed_by || "기록 없음"}</span>
                 </div>
               )}
               {!r.parking_end_time && (

@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Shell, AppBar } from "../components/ui";
 import { Field } from "../components/form";
 import { IconSearch, IconPhone, IconCar } from "../components/Icons";
-import { vehicleApi } from "../api/resources";
-import { decideVerdict, VERDICT, PARKING_TYPE } from "../lib/domain";
+import { vehicleApi, visitantApi } from "../api/resources";
+import { decideVerdict, VERDICT, PARKING_TYPE, plateSearchParams } from "../lib/domain";
 
 // 조회된 차량의 parking_type 을 그대로 판정으로 매핑한다.
 //   무단주차 → 무단주차 / 거주주차 → 거주주차 / 방문주차 → 방문주차 / 지정주차 → 지정주차
@@ -43,16 +43,16 @@ export default function Verify() {
     setError(null);
     try {
       // 차량번호로 서버 조회 — 활성(is_deleted=False) 차량만.
-      //   GET /api/parking/vehicle/?plate_number={q}
+      //   GET /api/parking/vehicle/?plate_number_contains={q}  (번호 일부)
       let matches;
       try {
-        matches = await vehicleApi.list({ plate_number: q });
+        matches = await vehicleApi.list(plateSearchParams(q));
       } catch (err) {
         // 400 등 조회 실패 → '미등록'이 아니라 에러 메시지로 구분한다.
         const status = err.response?.status;
         setError(
           status === 400
-            ? "차량번호 조회를 사용할 수 없습니다. (서버가 plate_number 검색을 지원하지 않음)"
+            ? "차량번호 조회를 사용할 수 없습니다. (서버가 번호 일부 검색을 지원하지 않음)"
             : "차량번호 조회에 실패했습니다. 잠시 후 다시 시도해 주세요."
         );
         return;
@@ -72,10 +72,26 @@ export default function Verify() {
     }
   }
 
+  // 방문 차량은 유형 값만으로 판정하면 만료된 티켓도 "방문"이 된다(B-08). 티켓을 확인한다.
+  async function judge(vehicle) {
+    if (vehicle.parking_type !== PARKING_TYPE.VISITOR) return verdictFromType(vehicle.parking_type);
+    const visitants = await visitantApi.list();
+    return decideVerdict(vehicle, visitants);
+  }
+
   async function showVerdict(vehicle) {
     setBusy(true);
+    // 후보 목록에서 다시 고를 때 앞 후보의 오류 카드가 남지 않게 한다.
+    setError(null);
     try {
-      const verdict = verdictFromType(vehicle.parking_type);
+      let verdict;
+      try {
+        verdict = await judge(vehicle);
+      } catch {
+        // 티켓을 못 읽었는데 "만료 → 무단"으로 보여 주면 실제 방문객이 단속당한다.
+        setError("방문 티켓을 확인하지 못했습니다. 잠시 후 다시 시도해 주세요.");
+        return;
+      }
       let owner = null;
       try {
         const detail = await vehicleApi.get(vehicle.vehicle_id);
