@@ -62,6 +62,7 @@ cd android && ./gradlew test   # 번호판 판별 단위 테스트 (JDK 21 필�
 - 앱 ID `com.parkingdesk.app` 은 임시다. Play 스토어 출시 전 `android/app/build.gradle` 의 `applicationId` 를 확정한다(출시 후 변경 불가).
 - 서명 키(`*.jks`)는 저장소에 넣지 않는다.
 - **배포(테스트)**: 빌드한 APK 를 서버 `downloads/parkingdesk.apk` 로 올리면, 웹에 로그인한 사람이 마이페이지 [Android 앱 받기]로 받는다(`../backend/README.md` 앱 내려받기).
+- **앱 아이콘**: `python -I scripts/make_android_icon.py android/app/src/main/res` 로 적응형 벡터(+ Android 13 테마 아이콘)와 구형 PNG 를 같이 만든다. PWA 아이콘(`public/icon-*.png`)과는 일부러 다르게 둔다.
 
 ## 백엔드 연결 설정
 

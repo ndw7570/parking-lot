@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 주차관리 앱 아이콘: P(주차) + 카메라 조준선(번호판 인식). frontend/scripts/make_android_icon.py 로 PNG 와 함께 만든다 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <path android:pathData="M46,72 V40 H54 A9,9 0 0 1 54,58 H46" android:strokeColor="#FFFFFF" android:strokeWidth="7"
+        android:strokeLineJoin="round" android:fillColor="#00000000"/>
+    <path android:pathData="M31,40 V31 H40" android:strokeColor="#FFFFFF" android:strokeWidth="3.5"
+        android:strokeLineCap="round" android:strokeLineJoin="round" android:fillColor="#00000000"/>
+    <path android:pathData="M68,31 H77 V40" android:strokeColor="#FFFFFF" android:strokeWidth="3.5"
+        android:strokeLineCap="round" android:strokeLineJoin="round" android:fillColor="#00000000"/>
+    <path android:pathData="M77,68 V77 H68" android:strokeColor="#FFFFFF" android:strokeWidth="3.5"
+        android:strokeLineCap="round" android:strokeLineJoin="round" android:fillColor="#00000000"/>
+    <path android:pathData="M40,77 H31 V68" android:strokeColor="#FFFFFF" android:strokeWidth="3.5"
+        android:strokeLineCap="round" android:strokeLineJoin="round" android:fillColor="#00000000"/>
+</vector>
