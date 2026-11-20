@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Rect
+import android.util.Log
 import com.google.android.gms.tasks.Tasks
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
@@ -21,6 +22,7 @@ object HangulRescue {
     // 다시 읽을 그림의 글자 높이와 둘레 여백. 작은 그림 하나만 있으면 ML Kit 이 글자로 보지 않는다.
     private const val TARGET_HEIGHT = 160
     private const val MARGIN = 80
+    private const val TAG = "PlateScan"
 
     // 두 묶음 사이 틈이 글자 몇 개 너비 이상이면 한글을 빠뜨린 것으로 본다. 값은 실사진 측정으로 정했다(아래 P005 기록).
     // 실측(2026-11-20, 사진 11장): 빠뜨림 1.74~2.36, 한글을 숫자·기호로 읽음 0.95 이하~1.31.
@@ -32,14 +34,18 @@ object HangulRescue {
     /** 다시 읽을 만한 줄(앞 숫자 묶음 + 뒤 4자리)이 있는지. 없으면 그림 변환을 아예 안 한다. */
     fun hasCandidate(lines: List<Text.Line>): Boolean = lines.any { split(it).isNotEmpty() }
 
-    /** [upright] 는 ML Kit 좌표와 같은(회전 적용된) 장면 그림. */
-    // 빠뜨림으로 본 줄도 틈 다시 읽기에 실패하면 원래 방식(2번째 숫자 뒤부터)으로 한 번 더 본다.
+    /**
+     * [upright] 는 ML Kit 좌표와 같은(회전 적용된) 장면 그림.
+     * 빠뜨림으로 본 줄도 틈 다시 읽기에 실패하면 원래 방식(2번째 숫자 뒤부터)으로 한 번 더 본다.
+     */
     fun rescue(lines: List<Text.Line>, upright: Bitmap, recognizer: TextRecognizer): List<String> =
         lines.mapNotNull { line ->
             split(line).firstNotNullOfOrNull { parts ->
                 val crop = cropUpscaled(upright, parts.hangulArea) ?: return@firstNotNullOfOrNull null
                 val reread = Tasks.await(recognizer.process(InputImage.fromBitmap(crop, 0))).text
-                PlateParser.compose(parts.front, reread, parts.back, parts.hangulDropped)
+                PlateParser.compose(parts.front, reread, parts.back, parts.hangulDropped).also {
+                    Log.d(TAG, "rescue line=${line.text} gapMode=${parts.hangulDropped} reread=${reread.lines().joinToString(" ")} -> $it")
+                }
             }
         }.distinct()
 
@@ -67,6 +73,17 @@ object HangulRescue {
         val widen = (frontBox.width().toFloat() / first.text.length * GAP_WIDEN).toInt()
         val gapArea = Rect(frontBox.right - widen, lineBox.top - pad, backBox.left + widen, lineBox.bottom + pad)
         return listOf(Parts(front, back, gapArea, true), usual)
+    }
+
+    /** 번호판 폭(앞 묶음 왼쪽 ~ 뒤 묶음 오른쪽) / 뒤 4자리의 숫자 1개 폭. 진단용. */
+    fun widthInDigits(line: Text.Line): Float? {
+        val first = line.elements.firstOrNull() ?: return null
+        val last = line.elements.lastOrNull() ?: return null
+        if (first === last) return null
+        val frontBox = first.boundingBox ?: return null
+        val backBox = last.boundingBox ?: return null
+        val digit = backBox.width() / 4f
+        return (backBox.right - frontBox.left) / digit
     }
 
     /** 앞 묶음과 뒤 묶음 사이 틈 / 앞 묶음 글자 평균 너비. 진단 테스트(NightPhotoProbe)도 쓴다. */
