@@ -37,4 +37,11 @@ class PlateComposeTest {
     fun `gives up when the front is too short for the reread`() {
         assertNull(PlateParser.compose("18", "8수", "0502"))
     }
+
+    @Test
+    fun `dropped hangul - every front digit is kept`() {
+        // "199 7124": 버를 빠뜨렸다(2026-11-20). 틈만 다시 읽으면 "버" 하나라 앞 3자리를 그대로 쓴다
+        assertEquals("199버7124", PlateParser.compose("199", "버", "7124", hangulDropped = true))
+        assertEquals("12가3456", PlateParser.compose("12", "가", "3456", hangulDropped = true))
+    }
 }

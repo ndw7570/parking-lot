@@ -33,7 +33,7 @@ class NightPhotoProbe {
                 val lines = Tasks.await(recognizer.process(InputImage.fromBitmap(bmp, 0))).textBlocks.flatMap { it.lines }
                 val direct = PlateParser.findPlates(lines.map { it.text })
                 val rescued = if (direct.isEmpty()) HangulRescue.rescue(lines, bmp, recognizer) else emptyList()
-                Log.i("PlateProbe", "$name $label direct=$direct rescued=$rescued lines=${lines.map { it.text }}")
+                Log.i("PlateProbe", "$name $label direct=$direct rescued=$rescued lines=${lines.map { it.text }} gap=${lines.map { HangulRescue.gapRatio(it) }}")
             }
         }
     }
