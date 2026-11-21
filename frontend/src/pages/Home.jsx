@@ -229,9 +229,9 @@ function buildWeekly(visitants) {
     });
   }
   visitants.forEach((v) => {
-    // 백엔드가 created_at 을 안 주거나 이름이 다르면 카운트가 0이 된다.
-    // 흔한 대체 필드명까지 시도하고, 파싱 실패도 걸러낸다.
-    const raw = v.created_at ?? v.created ?? v.reg_date ?? v.visit_date;
+    // 필드 이름이 다르면 카운트가 0이 되므로 대체 이름까지 시도하고, 파싱 실패는 거른다.
+    // 서버 방문 티켓에는 created_at 이 없고 발급 시각이 parking_start_time 이다.
+    const raw = v.created_at ?? v.parking_start_time ?? v.created ?? v.reg_date ?? v.visit_date;
     const created = raw ? new Date(raw) : null;
     if (!created || Number.isNaN(created.getTime())) return;
     const b = buckets.find((x) => created >= x.start && created <= x.end);

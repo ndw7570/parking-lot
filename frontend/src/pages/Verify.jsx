@@ -244,7 +244,8 @@ export default function Verify() {
 
       {result && (
         <div style={{ marginTop: 18 }}>
-          <VerdictCard result={result} plate={plate.trim()} />
+          {/* 일부 번호로 찾았으면 입력값이 아니라 찾은 차량의 전체 번호를 보여 준다. */}
+          <VerdictCard result={result} plate={result.vehicle?.plate_number || plate.trim()} />
 
           {result.vehicle && (
             <div className="card" style={{ marginTop: 12 }}>
