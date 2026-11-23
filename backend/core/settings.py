@@ -146,13 +146,6 @@ APP_DOWNLOAD_ANDROID_FILE = env("APP_DOWNLOAD_ANDROID_FILE", default="parkingdes
 # 서명 링크 유효 시간(초). 링크가 메신저 등으로 퍼져도 금방 쓸모없어지게 짧게 둔다.
 APP_DOWNLOAD_LINK_MAX_AGE = env.int("APP_DOWNLOAD_LINK_MAX_AGE", default=300)
 
-# 무단주차 신고 사진(P005-025). 웹에서 바로 열리는 자리가 아니라 API 가 권한을 보고 내준다.
-# 운영 컨테이너는 /srv/uploads 를 볼륨으로 받는다(docker-compose.yml).
-REPORT_PHOTO_ROOT = env("REPORT_PHOTO_ROOT", default=str(BASE_DIR / "uploads"))
-REPORT_PHOTO_MAX_BYTES = env.int("REPORT_PHOTO_MAX_BYTES", default=5 * 1024 * 1024)
-REPORT_PHOTO_KEEP_DAYS = env.int("REPORT_PHOTO_KEEP_DAYS", default=30)
-REPORT_HOURLY_LIMIT = env.int("REPORT_HOURLY_LIMIT", default=5)
-
 DATABASES = {
     "prod": {
         "ENGINE": "django.db.backends.postgresql",

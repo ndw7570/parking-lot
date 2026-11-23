@@ -19,9 +19,6 @@ import Unauthorized from "./pages/Unauthorized";
 import UnauthorizedForm from "./pages/UnauthorizedForm";
 import Board from "./pages/Board";
 import PostDetail from "./pages/PostDetail";
-import ReportForm from "./pages/ReportForm";
-import Reports from "./pages/Reports";
-import ReportDetail from "./pages/ReportDetail";
 
 function RequireAuth({ children }) {
   if (!authApi.isAuthenticated()) return <Navigate to="/login" replace />;
@@ -154,31 +151,6 @@ export default function App() {
             element={
               <RequireAuth>
                 <PostDetail />
-              </RequireAuth>
-            }
-          />
-          {/* 무단주차 사진 신고(P005-025). 관리자·거주민이 같은 주소를 쓰고, 보이는 범위는 서버가 가른다. */}
-          <Route
-            path="/reports/new"
-            element={
-              <RequireAuth>
-                <ReportForm />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/reports"
-            element={
-              <RequireAuth>
-                <Reports />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/reports/:id"
-            element={
-              <RequireAuth>
-                <ReportDetail />
               </RequireAuth>
             }
           />

@@ -58,9 +58,6 @@ export default function Unauthorized() {
 
   return (
     <Shell bar={<AppBar sub="Unauthorized" title="무단주차" right={<AccountButton />} />}>
-      <button type="button" className="btn ghost" style={{ marginBottom: 10 }} onClick={() => nav("/reports")}>
-        사진 신고 보기
-      </button>
       <Segment options={VIEWS} value={view} onChange={setView} />
 
       {loading ? (

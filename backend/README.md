@@ -47,29 +47,6 @@ API: `/api/parking/<리소스>/` (vehicle, user-profile, dong-ho, visitant, unau
 - 파일이 없으면 "앱 파일이 아직 서버에 없습니다" 404 를 돌려준다.
 - 링크 유효 시간 `APP_DOWNLOAD_LINK_MAX_AGE`(초, 기본 300).
 
-## 무단주차 사진 신고 (P005-025)
-
-로그인한 누구나(거주민 포함) 신고한다. 코드: `parking_management/views/parking/report.py`, `report_photos.py`.
-
-| 요청 | 하는 일 | 권한 |
-|---|---|---|
-| `POST /api/parking/report/` (multipart: plate_number, parking_location, remarks, photo) | 신고. 같은 번호에 출차 처리 전 기록이 있으면 거기에 합친다 | 로그인 |
-| `GET /api/parking/report/?status=open\|closed` | 관리자는 전체, 그 밖에는 내 신고(합쳐진 것 포함) | 로그인 |
-| `PATCH /api/parking/report/{id}/` | `report_status`(CHECKING / DONE / REJECTED + reject_reason), `photo_keep` | 관리자 |
-| `DELETE /api/parking/report/{id}/` | 접수 상태인 내 신고 취소(다른 사람이 합친 건은 불가) | 신고자 |
-| `GET /api/parking/report/{id}/photo/{사진id}/` | 사진 파일. 다른 신고자의 사진은 신고자끼리 안 보인다 | 관리자·신고자 |
-| `GET /api/parking/report/summary/` | 벨·홈 카드용 숫자 | 로그인 |
-
-- 신고는 무단주차 기록(`UnauthorizedParkingRecord`)에 붙는다. 처리 완료·반려하면 그 기록도 출차 처리된다.
-- 일반 무단주차 API(`unauthorized-parking-record`)는 신고 칸을 못 바꾸고, 신고자 아이디를 싣지 않는다(이웃에게 드러나지 않게).
-- 사진: JPEG 만, 5MB 이하(`REPORT_PHOTO_MAX_BYTES`). 서버가 EXIF(촬영 위치)·주석 구간을 지우고 저장한다. 저장 자리 `REPORT_PHOTO_ROOT`(compose 는 `./uploads` -> `/srv/uploads`). 저장소에 올리지 않는다(.gitignore).
-- 한 사람이 1시간에 5건까지(`REPORT_HOURLY_LIMIT`).
-- **보관**: 처리 완료·반려 후 30일(`REPORT_PHOTO_KEEP_DAYS`)이 지나면 사진을 지운다. 영구보관(`photo_keep`)은 남긴다. 지우는 일은 명령으로 한다 - **서버 cron 에 하루 한 번 등록해야 한다**(등록 안 하면 안 지워진다):
-
-```bash
-docker compose exec -T backend python manage.py purge_report_photos
-```
-
 ## 실행
 
 환경변수는 `.env.example` 참고(비밀값은 저장소에 넣지 않는다).
@@ -93,5 +70,4 @@ sh run_tests.sh -k Visitant
 
 - `0007_like_unique_alive_only`: 좋아요 유일 제약을 "삭제 안 된 행끼리만"으로 바꾼다.
 - `0008_unauthorized_processed_by`: 무단주차 기록에 처리자 칸을 추가한다. 이전 기록은 비어 있다.
-- `0009_report_photo`: 무단주차 기록에 신고 칸 7개(상태·신고자·추가 신고자·횟수·반려 사유·처리 시각·영구보관), 첨부파일에 올린 사람·시각을 추가한다. 기존 행은 비어 있거나 0/거짓이라 동작이 바뀌지 않는다.
 - 운영 DB 에는 사람이 검토한 뒤 적용한다.

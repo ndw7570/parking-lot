@@ -36,7 +36,3 @@ keystore.properties
 !downloads/parkingdesk.apk
 # 번호판 인식 진단용 실사진(개인정보) - 저장소에 올리지 않는다
 frontend/android/app/src/androidTest/assets/night/
-
-# 무단주차 신고 사진(P005-025) - 차량 사진이라 저장소에 올리지 않는다.
-uploads/
-backend/uploads/

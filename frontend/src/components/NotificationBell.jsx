@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IconBell } from "./Icons";
 import { authApi, meIdentity } from "../api/auth";
-import { visitantApi, vehicleApi, reportApi, REPORT_STATUS } from "../api/resources";
+import { visitantApi, vehicleApi } from "../api/resources";
 import { visitExpiry, minutesUntil, formatRemaining } from "../lib/domain";
 
 // 내가 호스트인 방문차량 중 출차 임박(≤30분)한 것을 벨/목록으로 보여준다.
@@ -19,8 +19,6 @@ function toneOf(min) {
 export function NotificationBell() {
   const nav = useNavigate();
   const [items, setItems] = useState([]);
-  // 신고(P005-025): 관리자는 새 신고 수, 신고자는 최근 72시간 안에 끝난 내 신고.
-  const [reports, setReports] = useState({ new: 0, mine_closed: [] });
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -35,10 +33,6 @@ export function NotificationBell() {
         return;
       }
       async function load() {
-        reportApi
-          .summary()
-          .then((s) => alive && setReports({ new: s.new || 0, mine_closed: s.mine_closed || [] }))
-          .catch(() => {});
         try {
           const [visitants, vehicles] = await Promise.all([
             visitantApi.list().catch(() => []),
@@ -80,7 +74,7 @@ export function NotificationBell() {
     };
   }, []);
 
-  const count = items.length + (reports.new ? 1 : 0) + reports.mine_closed.length;
+  const count = items.length;
 
   return (
     <div style={{ position: "relative" }}>
@@ -133,44 +127,6 @@ export function NotificationBell() {
               padding: 8,
             }}
           >
-            {(reports.new > 0 || reports.mine_closed.length > 0) && (
-              <>
-                <div style={{ fontWeight: 700, fontSize: 13, padding: "6px 8px", color: "var(--text)" }}>
-                  무단주차 신고
-                </div>
-                {reports.new > 0 && (
-                  <button
-                    type="button"
-                    className="bell-item"
-                    onClick={() => {
-                      setOpen(false);
-                      nav("/reports");
-                    }}
-                  >
-                    <div style={{ fontWeight: 700, fontSize: 13.5, color: "var(--danger)" }}>
-                      새 신고 {reports.new}건
-                    </div>
-                  </button>
-                )}
-                {reports.mine_closed.map((r) => (
-                  <button
-                    key={r.id}
-                    type="button"
-                    className="bell-item"
-                    onClick={() => {
-                      setOpen(false);
-                      nav(`/reports/${r.id}`);
-                    }}
-                  >
-                    <div style={{ fontWeight: 700, fontSize: 13.5 }}>{r.plate_number} 신고</div>
-                    <div style={{ fontSize: 12.5, fontWeight: 600, marginTop: 2, color: "var(--text-muted)" }}>
-                      {REPORT_STATUS[r.report_status]?.label || r.report_status}
-                      {r.reject_reason ? ` · ${r.reject_reason}` : ""}
-                    </div>
-                  </button>
-                ))}
-              </>
-            )}
             <div
               style={{
                 fontWeight: 700,

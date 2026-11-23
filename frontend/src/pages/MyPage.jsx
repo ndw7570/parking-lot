@@ -193,11 +193,6 @@ export default function MyPage() {
             </>
           )}
 
-          <div className="section-title" style={{ marginTop: 18 }}>신고</div>
-          <button type="button" className="btn ghost" onClick={() => nav("/reports")}>
-            무단주차 신고 내역
-          </button>
-
           <div className="section-title" style={{ marginTop: 18 }}>계정</div>
           <button type="button" className="btn ghost" onClick={() => nav("/password")}>
             비밀번호 변경
