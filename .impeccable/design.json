@@ -1,0 +1,564 @@
+{
+ "schemaVersion": 2,
+ "generatedAt": "2026-11-23T17:11:12+09:00",
+ "title": "Design System: Parking Desk (주차관리)",
+ "extensions": {
+  "colorMeta": {
+   "night-shift-navy": {
+    "role": "primary",
+    "displayName": "Night-shift Navy",
+    "canonical": "#071a3a",
+    "tonalRamp": [
+     "#020711",
+     "#030d1d",
+     "#041228",
+     "#061734",
+     "#384761",
+     "#768192",
+     "#b4bac3",
+     "#e6e8eb"
+    ]
+   },
+   "console-navy": {
+    "role": "primary",
+    "displayName": "Console Navy",
+    "canonical": "#0b2a5b",
+    "tonalRamp": [
+     "#030c1b",
+     "#05152d",
+     "#071d3f",
+     "#092551",
+     "#3b547b",
+     "#7889a4",
+     "#b5bfcd",
+     "#e6e9ee"
+    ]
+   },
+   "command-navy": {
+    "role": "primary",
+    "displayName": "Command Navy",
+    "canonical": "#0e3a7a",
+    "tonalRamp": [
+     "#041124",
+     "#071d3d",
+     "#092855",
+     "#0c346d",
+     "#3e6194",
+     "#7a92b5",
+     "#b6c3d7",
+     "#e6ebf1"
+    ]
+   },
+   "horizon-navy": {
+    "role": "primary",
+    "displayName": "Horizon Navy",
+    "canonical": "#14509e",
+    "tonalRamp": [
+     "#06182f",
+     "#0a284f",
+     "#0e386e",
+     "#12488e",
+     "#4373b1",
+     "#7d9ec9",
+     "#b8cae1",
+     "#e7edf5"
+    ]
+   },
+   "ink": {
+    "role": "neutral",
+    "displayName": "Ink",
+    "canonical": "#0d1b2a",
+    "tonalRamp": [
+     "#03080c",
+     "#060d15",
+     "#09121d",
+     "#0b1825",
+     "#3d4854",
+     "#798189",
+     "#b6babf",
+     "#e6e8e9"
+    ]
+   },
+   "cool-paper": {
+    "role": "neutral",
+    "displayName": "Cool Paper",
+    "canonical": "#f5f7fb",
+    "tonalRamp": [
+     "#494a4b",
+     "#7a7b7d",
+     "#abacaf",
+     "#dcdee1",
+     "#f7f8fb",
+     "#f9fafc",
+     "#fcfcfd",
+     "#fefefe"
+    ]
+   },
+   "card-white": {
+    "role": "neutral",
+    "displayName": "Card White",
+    "canonical": "#ffffff",
+    "tonalRamp": [
+     "#4c4c4c",
+     "#7f7f7f",
+     "#b2b2b2",
+     "#e5e5e5",
+     "#ffffff",
+     "#ffffff",
+     "#ffffff",
+     "#ffffff"
+    ]
+   },
+   "hairline": {
+    "role": "neutral",
+    "displayName": "Hairline",
+    "canonical": "#e4e9f2",
+    "tonalRamp": [
+     "#444548",
+     "#727479",
+     "#9fa3a9",
+     "#cdd1d9",
+     "#e9edf4",
+     "#f0f2f7",
+     "#f6f8fb",
+     "#fcfcfd"
+    ]
+   },
+   "field-line": {
+    "role": "neutral",
+    "displayName": "Field Line",
+    "canonical": "#cdd6e6",
+    "tonalRamp": [
+     "#3d4045",
+     "#666b73",
+     "#8f95a1",
+     "#b8c0cf",
+     "#d7deeb",
+     "#e3e8f1",
+     "#f0f2f7",
+     "#fafafc"
+    ]
+   },
+   "deep-ink-text": {
+    "role": "neutral",
+    "displayName": "Deep Ink Text",
+    "canonical": "#10233f",
+    "tonalRamp": [
+     "#040a12",
+     "#08111f",
+     "#0b182c",
+     "#0e1f38",
+     "#3f4f65",
+     "#7b8695",
+     "#b7bdc5",
+     "#e7e9eb"
+    ]
+   },
+   "slate-muted": {
+    "role": "neutral",
+    "displayName": "Slate Muted",
+    "canonical": "#5a6b85",
+    "tonalRamp": [
+     "#1b2027",
+     "#2d3542",
+     "#3e4a5d",
+     "#516077",
+     "#7b889d",
+     "#a4adbb",
+     "#cdd2da",
+     "#eef0f2"
+    ]
+   },
+   "faded-slate": {
+    "role": "neutral",
+    "displayName": "Faded Slate",
+    "canonical": "#8a99b3",
+    "tonalRamp": [
+     "#292d35",
+     "#454c59",
+     "#606b7d",
+     "#7c89a1",
+     "#a1adc2",
+     "#bec6d5",
+     "#dbe0e8",
+     "#f3f4f7"
+    ]
+   },
+   "on-navy": {
+    "role": "neutral",
+    "displayName": "On Navy",
+    "canonical": "#eaf1ff",
+    "tonalRamp": [
+     "#46484c",
+     "#75787f",
+     "#a3a8b2",
+     "#d2d8e5",
+     "#eef3ff",
+     "#f3f7ff",
+     "#f8faff",
+     "#fcfdff"
+    ]
+   },
+   "on-navy-muted": {
+    "role": "neutral",
+    "displayName": "On Navy Muted",
+    "canonical": "#9fb6e0",
+    "tonalRamp": [
+     "#2f3643",
+     "#4f5b70",
+     "#6f7f9c",
+     "#8fa3c9",
+     "#b2c4e6",
+     "#cad6ed",
+     "#e2e9f5",
+     "#f5f7fb"
+    ]
+   },
+   "signal-cyan": {
+    "role": "secondary",
+    "displayName": "Signal Cyan",
+    "canonical": "#16b8d4",
+    "tonalRamp": [
+     "#06373f",
+     "#0b5c6a",
+     "#0f8094",
+     "#13a5be",
+     "#44c6dc",
+     "#7ed7e7",
+     "#b9e9f2",
+     "#e7f7fa"
+    ]
+   },
+   "signal-cyan-deep": {
+    "role": "secondary",
+    "displayName": "Signal Cyan Deep",
+    "canonical": "#0e93ab",
+    "tonalRamp": [
+     "#042c33",
+     "#074955",
+     "#096677",
+     "#0c8499",
+     "#3ea8bb",
+     "#7ac3d0",
+     "#b6dee5",
+     "#e6f4f6"
+    ]
+   },
+   "signal-cyan-mist": {
+    "role": "secondary",
+    "displayName": "Signal Cyan Mist",
+    "canonical": "#e2f7fb",
+    "tonalRamp": [
+     "#434a4b",
+     "#717b7d",
+     "#9eacaf",
+     "#cbdee1",
+     "#e7f8fb",
+     "#effafc",
+     "#f6fcfd",
+     "#fcfefe"
+    ]
+   },
+   "go-green": {
+    "role": "tertiary",
+    "displayName": "Go Green",
+    "canonical": "#1f9d57",
+    "tonalRamp": [
+     "#092f1a",
+     "#0f4e2b",
+     "#156d3c",
+     "#1b8d4e",
+     "#4bb078",
+     "#83c9a2",
+     "#bbe1cc",
+     "#e8f5ee"
+    ]
+   },
+   "go-green-mist": {
+    "role": "tertiary",
+    "displayName": "Go Green Mist",
+    "canonical": "#e3f6ec",
+    "tonalRamp": [
+     "#444946",
+     "#717b76",
+     "#9eaca5",
+     "#ccddd4",
+     "#e8f7ef",
+     "#effaf4",
+     "#f6fcf9",
+     "#fcfefd"
+    ]
+   },
+   "caution-amber": {
+    "role": "tertiary",
+    "displayName": "Caution Amber",
+    "canonical": "#d98a1a",
+    "tonalRamp": [
+     "#412907",
+     "#6c450d",
+     "#976012",
+     "#c37c17",
+     "#e0a147",
+     "#eabe81",
+     "#f3dbba",
+     "#fbf3e8"
+    ]
+   },
+   "caution-amber-mist": {
+    "role": "tertiary",
+    "displayName": "Caution Amber Mist",
+    "canonical": "#fbf0da",
+    "tonalRamp": [
+     "#4b4841",
+     "#7d786d",
+     "#afa898",
+     "#e1d8c4",
+     "#fbf3e1",
+     "#fcf6ea",
+     "#fdfaf3",
+     "#fefdfb"
+    ]
+   },
+   "stop-red": {
+    "role": "tertiary",
+    "displayName": "Stop Red",
+    "canonical": "#d6413f",
+    "tonalRamp": [
+     "#401312",
+     "#6b201f",
+     "#952d2c",
+     "#c03a38",
+     "#de6765",
+     "#e89695",
+     "#f2c6c5",
+     "#faeceb"
+    ]
+   },
+   "stop-red-mist": {
+    "role": "tertiary",
+    "displayName": "Stop Red Mist",
+    "canonical": "#fbe6e5",
+    "tonalRamp": [
+     "#4b4544",
+     "#7d7372",
+     "#afa1a0",
+     "#e1cfce",
+     "#fbebea",
+     "#fcf1f0",
+     "#fdf7f7",
+     "#fefcfc"
+    ]
+   },
+   "segment-well": {
+    "role": "neutral",
+    "displayName": "Segment Well",
+    "canonical": "#eef1f7",
+    "tonalRamp": [
+     "#47484a",
+     "#77787b",
+     "#a6a8ac",
+     "#d6d8de",
+     "#f1f3f8",
+     "#f5f7fa",
+     "#f9fafc",
+     "#fdfdfe"
+    ]
+   }
+  },
+  "typographyMeta": {
+   "display": {
+    "displayName": "Display",
+    "purpose": "판정 결과 한 곳."
+   },
+   "headline": {
+    "displayName": "Numeric Headline",
+    "purpose": "KPI 숫자 (Space Grotesk)."
+   },
+   "title": {
+    "displayName": "Title",
+    "purpose": "앱바 제목."
+   },
+   "body": {
+    "displayName": "Body",
+    "purpose": "본문·입력·버튼."
+   },
+   "list": {
+    "displayName": "List",
+    "purpose": "목록·타일 제목."
+   },
+   "label": {
+    "displayName": "Label",
+    "purpose": "대문자 섹션 제목."
+   },
+   "caption": {
+    "displayName": "Caption",
+    "purpose": "배지·힌트·메타. 최소 크기."
+   }
+  },
+  "shadows": [
+   {
+    "name": "card-rest",
+    "value": "0 1px 2px rgba(13,27,42,.04), 0 8px 24px rgba(13,27,42,.06)",
+    "purpose": "카드·검색창의 받침."
+   },
+   {
+    "name": "float",
+    "value": "0 12px 32px rgba(7,26,58,.24)",
+    "purpose": "FAB·토스트처럼 떠 있는 것."
+   }
+  ],
+  "motion": [
+   {
+    "name": "press",
+    "value": "transform 0.1s",
+    "purpose": "버튼 누름."
+   },
+   {
+    "name": "field-focus",
+    "value": "border-color 0.12s, box-shadow 0.12s",
+    "purpose": "입력 포커스."
+   },
+   {
+    "name": "toast-in",
+    "value": "0.2s ease",
+    "purpose": "토스트 등장."
+   }
+  ],
+  "breakpoints": [
+   {
+    "name": "shell-max",
+    "value": "480px"
+   }
+  ]
+ },
+ "components": [
+  {
+   "name": "Primary Button",
+   "kind": "button",
+   "refersTo": "button-primary",
+   "description": "저장·확정. 화면당 하나.",
+   "html": "<button class=\"ds-btn ds-btn-primary\">저장</button>",
+   "css": ".ds-btn{font-family:'IBM Plex Sans KR',-apple-system,'Malgun Gothic',sans-serif;width:100%;border:none;border-radius:13px;padding:15px 18px;font-size:15px;font-weight:600;transition:transform .1s}.ds-btn:active{transform:scale(.98)}.ds-btn:focus-visible{outline:2px solid #16b8d4;outline-offset:2px}.ds-btn-primary{background:#0e3a7a;color:#fff}.ds-btn-primary:hover{background:#14509e}"
+  },
+  {
+   "name": "Signal Button",
+   "kind": "button",
+   "refersTo": "button-signal",
+   "description": "'지금 실행' 하나에만 쓰는 시안 버튼.",
+   "html": "<button class=\"ds-btn ds-btn-signal\">번호판 인식</button>",
+   "css": ".ds-btn{font-family:'IBM Plex Sans KR',-apple-system,'Malgun Gothic',sans-serif;width:100%;border:none;border-radius:13px;padding:15px 18px;font-size:15px;font-weight:600;transition:transform .1s}.ds-btn:active{transform:scale(.98)}.ds-btn:focus-visible{outline:2px solid #16b8d4;outline-offset:2px}.ds-btn-signal{background:#16b8d4;color:#071a3a}.ds-btn-signal:hover{background:#0e93ab;color:#fff}"
+  },
+  {
+   "name": "Ghost Button",
+   "kind": "button",
+   "refersTo": "button-ghost",
+   "description": "보조 행동.",
+   "html": "<button class=\"ds-btn ds-btn-ghost\">비밀번호 변경</button>",
+   "css": ".ds-btn{font-family:'IBM Plex Sans KR',-apple-system,'Malgun Gothic',sans-serif;width:100%;border:none;border-radius:13px;padding:15px 18px;font-size:15px;font-weight:600;transition:transform .1s}.ds-btn:active{transform:scale(.98)}.ds-btn:focus-visible{outline:2px solid #16b8d4;outline-offset:2px}.ds-btn-ghost{background:#fff;border:1px solid #cdd6e6;color:#10233f}.ds-btn-ghost:hover{background:#f5f7fb}"
+  },
+  {
+   "name": "Danger Button",
+   "kind": "button",
+   "refersTo": "button-danger",
+   "description": "무단 접수·삭제·로그아웃.",
+   "html": "<button class=\"ds-btn ds-btn-danger\">무단주차로 등록</button>",
+   "css": ".ds-btn{font-family:'IBM Plex Sans KR',-apple-system,'Malgun Gothic',sans-serif;width:100%;border:none;border-radius:13px;padding:15px 18px;font-size:15px;font-weight:600;transition:transform .1s}.ds-btn:active{transform:scale(.98)}.ds-btn:focus-visible{outline:2px solid #16b8d4;outline-offset:2px}.ds-btn-danger{background:#d6413f;color:#fff}.ds-btn-danger:hover{background:#b32e2c}"
+  },
+  {
+   "name": "Text Input",
+   "kind": "input",
+   "refersTo": "input",
+   "description": "흰 바탕, 포커스는 시안 테두리 + 옅은 링.",
+   "html": "<input class=\"ds-input\" placeholder=\"예) 12가 3456\">",
+   "css": ".ds-input{font-family:'IBM Plex Sans KR',-apple-system,'Malgun Gothic',sans-serif;width:100%;border:1px solid #cdd6e6;border-radius:12px;padding:13px 14px;font-size:15px;background:#fff;color:#10233f;outline:none;transition:border-color .12s,box-shadow .12s}.ds-input:focus{border-color:#16b8d4;box-shadow:0 0 0 3px #e2f7fb}"
+  },
+  {
+   "name": "Filter Chip",
+   "kind": "chip",
+   "refersTo": "chip",
+   "description": "선택하면 네이비로 채워진다.",
+   "html": "<div class=\"ds-chips\"><button class=\"ds-chip ds-on\" aria-pressed=\"true\">지상</button><button class=\"ds-chip\" aria-pressed=\"false\">주차타워</button></div>",
+   "css": ".ds-chips{display:flex;gap:8px}.ds-chip{font-family:'IBM Plex Sans KR',-apple-system,'Malgun Gothic',sans-serif;border:1px solid #cdd6e6;background:#fff;color:#5a6b85;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:500}.ds-chip.ds-on{background:#0e3a7a;border-color:#0e3a7a;color:#fff}.ds-chip:focus-visible{outline:2px solid #16b8d4;outline-offset:2px}"
+  },
+  {
+   "name": "Card",
+   "kind": "card",
+   "refersTo": "card",
+   "description": "흰 카드, 거의 보이지 않는 받침 그림자.",
+   "html": "<div class=\"ds-card\"><b>12가3456</b><div class=\"ds-meta\">승용차 · 검정</div></div>",
+   "css": ".ds-card{font-family:'IBM Plex Sans KR',-apple-system,'Malgun Gothic',sans-serif;background:#fff;border:1px solid #e4e9f2;border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(13,27,42,.04),0 8px 24px rgba(13,27,42,.06);color:#10233f}.ds-meta{font-size:12.5px;color:#5a6b85;margin-top:3px}"
+  },
+  {
+   "name": "Status Badge",
+   "kind": "chip",
+   "refersTo": "badge-ok",
+   "description": "판정 3색 알약.",
+   "html": "<span class=\"ds-badge ds-ok\">● 지정주차</span> <span class=\"ds-badge ds-warn\">● 방문주차</span> <span class=\"ds-badge ds-danger\">● 무단주차</span>",
+   "css": ".ds-badge{font-family:'IBM Plex Sans KR',-apple-system,'Malgun Gothic',sans-serif;display:inline-flex;font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px}.ds-ok{color:#1f9d57;background:#e3f6ec}.ds-warn{color:#d98a1a;background:#fbf0da}.ds-danger{color:#d6413f;background:#fbe6e5}"
+  },
+  {
+   "name": "Verdict Card",
+   "kind": "custom",
+   "refersTo": "verdict-danger",
+   "description": "이 앱의 대표 부품. 판정 결과를 화면에서 가장 큰 면으로.",
+   "html": "<div class=\"ds-verdict\"><div class=\"ds-eye\">주차 판정</div><div class=\"ds-big\">무단주차</div><div class=\"ds-sub\">미등록 차량 · 확인 필요</div><span class=\"ds-plate\">99허9999</span></div>",
+   "css": ".ds-verdict{font-family:'IBM Plex Sans KR',-apple-system,'Malgun Gothic',sans-serif;position:relative;overflow:hidden;border-radius:16px;padding:20px;color:#fff;background:linear-gradient(135deg,#b32e2c,#d6413f)}.ds-verdict::after{content:\"\";position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.12)}.ds-eye{font-size:11px;opacity:.85}.ds-big{font-size:30px;font-weight:700;letter-spacing:-.02em;margin:4px 0 2px}.ds-sub{font-size:13px;opacity:.9}.ds-plate{display:inline-block;margin-top:12px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.18);font-family:'Space Grotesk','IBM Plex Sans KR',-apple-system,'Malgun Gothic',sans-serif;font-weight:700}"
+  },
+  {
+   "name": "App Bar",
+   "kind": "nav",
+   "refersTo": "app-bar",
+   "description": "네이비 그라데이션 머리, 영문 부제 + 제목, 오른쪽 아이콘 버튼.",
+   "html": "<header class=\"ds-bar\"><div><p class=\"ds-sub2\">VERIFY</p><h1>주차 권한 확인</h1></div><button class=\"ds-ib\" aria-label=\"알림\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9\"/><path d=\"M10.3 21a1.94 1.94 0 0 0 3.4 0\"/></svg></button></header>",
+   "css": ".ds-bar{font-family:'IBM Plex Sans KR',-apple-system,'Malgun Gothic',sans-serif;display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(180deg,#0b2a5b,#0e3a7a);color:#eaf1ff}.ds-bar h1{margin:0;font-size:16px;font-weight:600}.ds-sub2{margin:0;font-size:11px;color:#9fb6e0;letter-spacing:.06em}.ds-ib{width:38px;height:38px;border:none;border-radius:10px;background:rgba(255,255,255,.1);color:#eaf1ff;display:grid;place-items:center}.ds-ib:focus-visible{outline:2px solid #16b8d4;outline-offset:2px}"
+  }
+ ],
+ "narrative": {
+  "northStar": "The Gatehouse Console (경비실 계기판)",
+  "overview": "밤에 순찰하는 경비원이 차 앞에 서서 한 손으로 폰을 들고 보는 계기판이다. 화면의 할 일은 하나, \"이 차가 여기 서도 되는가\"를 1초 안에 알려 주는 것. 그래서 바탕은 차분하게 물러서고(짙은 네이비 앱바, 차가운 종이색 바탕, 흰 카드), 크게 말하는 것은 판정 하나뿐이다. 판정은 신호등 색(초록 / 주황 / 빨강)으로, 화면에서 가장 크고 가장 진한 면이다.\n\n밀도는 \"모바일 업무 도구\" 수준이다. 한 화면에 카드 서너 장, 글자는 15px 본문을 기준으로 쓰고, 숫자(KPI·번호판)는 Space Grotesk 로 따로 세운다. 장식은 거의 없다. 표현은 정확한 디테일에 산다: 시안 한 점이 \"지금 누를 것\"을 가리키고, 나머지는 네이비 농담으로 위계를 만든다.\n\n데스크톱에서도 480px 폭 한 줄 그대로 쓴다. 이 도구의 자리는 순찰하는 손 안이고, 넓은 화면용 배치는 따로 만들지 않는다.",
+  "keyCharacteristics": [
+   "네이비 앱바 + 차가운 종이색 바탕 + 흰 카드의 3층",
+   "시안은 \"지금 실행\" 한 곳에만",
+   "판정은 신호등 3색, 화면에서 가장 큰 면",
+   "숫자는 Space Grotesk, 글은 IBM Plex Sans KR",
+   "480px 단일 열, 하단 탭 5개, 등록은 FAB"
+  ],
+  "rules": [
+   {
+    "name": "The One Signal Rule",
+    "body": "시안은 한 화면에 \"지금 실행\" 하나에만 쓴다. 시안이 둘이면 무엇을 누를지 흐려진다.",
+    "section": "colors"
+   },
+   {
+    "name": "The Traffic Light Rule",
+    "body": "초록·주황·빨강은 판정과 상태에만 쓴다. 장식·카테고리 구분·그래프 색으로 쓰지 않는다. 이 세 색을 보면 늘 \"서도 되나\"로 읽혀야 한다.",
+    "section": "colors"
+   },
+   {
+    "name": "The Eleven Floor Rule",
+    "body": "기능하는 글자(탭 라벨, KPI 라벨, 힌트)는 11px 아래로 내리지 않는다. 지금 탭·KPI 라벨 10.5px 는 위반(감사 P2).",
+    "section": "typography"
+   },
+   {
+    "name": "The Two Heights Rule",
+    "body": "그림자는 \"놓임\"과 \"떠 있음\" 두 단계뿐이다. 새 단계를 만들지 않는다.",
+    "section": "elevation"
+   }
+  ],
+  "dos": [
+   "Do 판정은 Verdict Card 하나로, 신호등 3색 그라데이션과 30px 결과로 보여 준다.",
+   "Do 시안은 화면당 \"지금 실행\" 하나(Signal 버튼 또는 FAB)에만.",
+   "Do 숫자(KPI·번호판·시각)는 Space Grotesk.",
+   "Do 새 색은 `:root` 토큰으로 먼저 만들고 이름으로 쓴다.",
+   "Do 터치 대상은 44px 이상을 기본으로(지금 앱바 아이콘 38px, 세그먼트 37px 는 미달)."
+  ],
+  "donts": [
+   "Don't 초록·주황·빨강을 판정·상태가 아닌 곳(그래프·카테고리·장식)에 쓰지 않는다.",
+   "Don't Faded Slate(`faded-slate`)를 읽어야 하는 글자에 쓰지 않는다. 힌트·섹션 제목은 Slate Muted 로.",
+   "Don't 기능하는 글자를 11px 아래로 쓰지 않는다.",
+   "Don't 카드 안에 카드를 겹치지 않는다(지금 목록 카드 안 카드 9곳).",
+   "Don't 확대를 막지 않는다(`user-scalable=no` 는 WCAG 1.4.4 위반).",
+   "Don't 같은 판정을 화면마다 다른 이름으로 부르지 않는다(지금 \"거주주차\"/\"지정주차\")."
+  ]
+ }
+}

@@ -9,6 +9,9 @@
 |---|---|
 | 화면 기능, 로컬 실행, 배포(Docker·Nginx), 환경변수 | `frontend/README.md` |
 | API 구조, 권한 규칙, 테스트, 마이그레이션 주의 | `backend/README.md` |
+| 디자인 시스템(색·글꼴·반경·그림자 토큰, 규칙) | `DESIGN.md` (impeccable 형식, 사이드카 `.impeccable/design.json`) |
+| 화면 부품 카탈로그·추출 후보 | `docs/COMPONENTS.md` |
+| 디자인 감사 보고 | `.impeccable/audit/` |
 
 ## 구성
 
