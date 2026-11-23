@@ -4,6 +4,7 @@ import { Shell, AppBar, useToast } from "../components/ui";
 import { Field, TextInput, TextArea, ChipPicker } from "../components/form";
 import { unauthorizedApi, vehicleApi, userProfileApi } from "../api/resources";
 import { formatPhoneNumber, normalizePlateNumber, PARKING_TYPE } from "../lib/domain";
+import { errorMessage, logError } from "../lib/apiError";
 
 const LOCATIONS = ["지상", "주차타워", "기타"];
 
@@ -149,22 +150,8 @@ export default function UnauthorizedForm() {
     }
     setBusy(true);
     try {
-      // Reuse the matched vehicle; otherwise create a new unregistered one.
-      let vehicle = existing;
-      if (!vehicle) {
-        vehicle = await vehicleApi.create({
-          user: null,
-          parking_type: PARKING_TYPE.UNAUTHORIZED,
-          vehicle_type: "기타",
-          model_name: null,
-          plate_number: normalizedPlate,
-          color: null,
-          tower_yn: false,
-          remarks: form.remarks || null,
-          is_deleted: false,
-        });
-      }
-
+      // 미등록 번호면 서버가 무단 차량을 같이 만든다(한 요청, 원자적). 화면이 두 번 나눠 부르던
+      // 때는 기록 생성이 실패하면 차량만 남고, 다시 시도하면 "이미 존재"로 영영 실패했다.
       await unauthorizedApi.create({
         plate_number: normalizedPlate,
         phone_number: form.phone_number || null,
@@ -175,8 +162,9 @@ export default function UnauthorizedForm() {
       });
       toast("무단주차로 등록되었습니다.");
       nav("/unauthorized", { replace: true });
-    } catch {
-      toast("저장에 실패했습니다.", "err");
+    } catch (err) {
+      logError("unauthorized-create", err);
+      toast(errorMessage(err, "무단주차를 접수하지 못했습니다."), "err");
     } finally {
       setBusy(false);
     }

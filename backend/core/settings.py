@@ -66,6 +66,8 @@ REST_FRAMEWORK = {
         "django_filters.rest_framework.DjangoFilterBackend",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    # 모든 오류에 { error: { code, message } } 를 싣고, 500 도 JSON 으로 (core/errors.py).
+    "EXCEPTION_HANDLER": "core.errors.api_exception_handler",
 }
 
 MIDDLEWARE = [

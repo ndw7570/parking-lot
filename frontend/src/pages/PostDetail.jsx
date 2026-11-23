@@ -5,6 +5,7 @@ import { Field, TextInput, TextArea, ChipPicker } from "../components/form";
 import { IconBoard } from "../components/Icons";
 import { postApi, commentApi } from "../api/resources";
 import { formatDate } from "../lib/domain";
+import { errorMessage, logError } from "../lib/apiError";
 
 const TYPE_LABEL = { NOTICE: "공지", FREE: "자유", QNA: "문의" };
 const TYPE_OPTS = [
@@ -50,8 +51,9 @@ function NewPost() {
       });
       toast("게시글이 등록되었습니다.");
       nav(`/board/${post.posts_id}`, { replace: true });
-    } catch {
-      toast("등록에 실패했습니다.", "err");
+    } catch (err) {
+      logError("post-create", err);
+      toast(errorMessage(err, "게시글을 등록하지 못했습니다."), "err");
     } finally {
       setBusy(false);
     }
@@ -136,8 +138,9 @@ function ViewPost({ id }) {
       setReply("");
       toast("댓글이 등록되었습니다.");
       load();
-    } catch {
-      toast("댓글 등록에 실패했습니다.", "err");
+    } catch (err) {
+      logError("comment-create", err);
+      toast(errorMessage(err, "댓글을 등록하지 못했습니다."), "err");
     } finally {
       setSending(false);
     }

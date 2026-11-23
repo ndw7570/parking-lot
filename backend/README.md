@@ -47,6 +47,24 @@ API: `/api/parking/<리소스>/` (vehicle, user-profile, dong-ho, visitant, unau
 - 파일이 없으면 "앱 파일이 아직 서버에 없습니다" 404 를 돌려준다.
 - 링크 유효 시간 `APP_DOWNLOAD_LINK_MAX_AGE`(초, 기본 300).
 
+## 오류 응답 (P005-027)
+
+모든 오류 응답에 `{"error": {"code": ..., "message": ...}}` 가 붙는다(`core/errors.py`). 기존 필드 오류(`{"plate_number": ["..."]}`)·`detail` 은 그대로 남는다. 500 도 JSON 이고, 전체 내용은 로그 `core.errors` 에만 남는다.
+
+| code | HTTP | 뜻 |
+|---|---|---|
+| `VALIDATION_ERROR` | 400 | 입력값 오류. 필드 오류가 함께 온다 |
+| `NOT_AUTHENTICATED` | 401 | 로그인 필요·만료 |
+| `PERMISSION_DENIED` | 403 | 권한 없음 |
+| `NOT_FOUND` | 404 | 없음 |
+| `RATE_LIMITED` | 429 | 너무 잦음 |
+| `SERVER_ERROR` | 500 | 예상 못 한 오류(사용자 문장에는 내부 사정 없음) |
+| `HAS_PERMIT` | 400 | 무단주차 접수: 거주·방문·지정 차량이라 접수 불가 |
+| `ALREADY_OPEN` | 409 | 무단주차 접수: 같은 번호가 이미 주차 중으로 접수됨 |
+
+- 화면 쪽 문장표: `frontend/src/lib/apiError.js` `ERROR_MESSAGES`. 새 code 를 만들면 서버 `message` 를 사람이 읽을 문장으로 쓰고, 화면은 그대로 보여 준다.
+- 무단주차 접수(`POST /api/parking/unauthorized-parking-record/`)는 미등록 번호면 무단 차량까지 한 트랜잭션으로 만든다. 화면이 차량을 따로 만들지 않는다.
+
 ## 실행
 
 환경변수는 `.env.example` 참고(비밀값은 저장소에 넣지 않는다).

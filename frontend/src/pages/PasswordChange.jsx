@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Shell, AppBar, useToast } from "../components/ui";
 import { Field, TextInput } from "../components/form";
 import { authApi, getCurrentUserId } from "../api/auth";
+import { errorMessage, logError } from "../lib/apiError";
 
 export default function PasswordChange() {
   const nav = useNavigate();
@@ -52,11 +53,11 @@ export default function PasswordChange() {
       if (status === 401) {
         toast("아이디 또는 현재 비밀번호가 올바르지 않습니다.", "err");
       } else {
+        logError("password-change", err);
         toast(
           data?.new_password?.[0] ||
             data?.current_password?.[0] ||
-            data?.detail ||
-            "변경에 실패했습니다.",
+            errorMessage(err, "비밀번호를 바꾸지 못했습니다."),
           "err"
         );
       }

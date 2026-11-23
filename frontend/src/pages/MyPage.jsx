@@ -6,6 +6,7 @@ import { dongHoApi, userProfileApi, vehicleApi } from "../api/resources";
 import { authApi, getCurrentUserId } from "../api/auth";
 import { buildMyOverview, formatPhoneNumber } from "../lib/domain";
 import { androidAppDownloadUrl, canDownloadAndroidApp } from "../lib/appDownload";
+import { errorMessage, logError } from "../lib/apiError";
 
 // 서버에 "내 요약" 전용 API 가 없어 세대·차량 목록에서 내 것을 고른다(P005-010).
 // 전용 API 가 생기면 이 함수 본문만 바꾸면 된다.
@@ -86,7 +87,8 @@ export default function MyPage() {
       setEditing(false);
       toast("저장되었습니다.");
     } catch (err) {
-      toast(err.response?.data?.detail || "저장에 실패했습니다.", "err");
+      logError("mypage-save", err);
+      toast(errorMessage(err, "내 정보를 저장하지 못했습니다."), "err");
     } finally {
       setBusy(false);
     }

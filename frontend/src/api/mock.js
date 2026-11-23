@@ -202,6 +202,16 @@ export const mockApi = {
       ).toISOString();
     }
     db[key] = [...(db[key] || []), row];
+    // 무단주차 접수: 서버처럼 미등록 번호면 무단 차량을 같이 만든다(P005-027).
+    if (path === "unauthorized-parking-record" && row.plate_number) {
+      const known = (db.vehicle || []).some((v) => !v.is_deleted && v.plate_number === row.plate_number);
+      if (!known) {
+        db.vehicle = [...(db.vehicle || []), {
+          vehicle_id: nextId("vehicle", "vehicle_id"), user: null, parking_type: "무단주차", vehicle_type: "기타",
+          model_name: null, plate_number: row.plate_number, color: null, tower_yn: false, remarks: null, is_deleted: false,
+        }];
+      }
+    }
     // keep denormalized counters plausible
     if (path === "comment" && row.post != null) {
       const p = (db.post || []).find((x) => x.posts_id === Number(row.post));

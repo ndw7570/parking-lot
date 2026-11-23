@@ -23,7 +23,7 @@ vi.mock("./client", () => {
 
 import { isDemo } from "./config";
 import { authApi } from "./auth";
-import { vehicleApi } from "./resources";
+import { unauthorizedApi, vehicleApi } from "./resources";
 
 describe("demo browsing", () => {
   beforeEach(() => authApi.endDemo());
@@ -51,6 +51,21 @@ describe("demo browsing", () => {
     await authApi.startDemo();
 
     expect((await vehicleApi.list()).length).toBe(before);
+  });
+
+  it("registering an unknown plate as unauthorized also creates its vehicle, like the server", async () => {
+    // Arrange
+    await authApi.startDemo();
+    const plate = "88데8888";
+
+    // Act
+    await unauthorizedApi.create({ plate_number: plate, parking_location: "지상", parking_start_time: new Date().toISOString() });
+    await unauthorizedApi.create({ plate_number: plate, parking_location: "지상", parking_start_time: new Date().toISOString() });
+
+    // Assert
+    const vehicles = (await vehicleApi.list()).filter((v) => v.plate_number === plate);
+    expect(vehicles).toHaveLength(1);
+    expect(vehicles[0].parking_type).toBe("무단주차");
   });
 
   it("logging out of the demo ends it", async () => {

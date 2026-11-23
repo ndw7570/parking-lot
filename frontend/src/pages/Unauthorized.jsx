@@ -6,6 +6,7 @@ import { IconAlert, IconPlus, IconCheck, IconPhone } from "../components/Icons";
 import { unauthorizedApi } from "../api/resources";
 import { authApi } from "../api/auth";
 import { formatDateTime } from "../lib/domain";
+import { errorMessage, logError } from "../lib/apiError";
 
 const VIEWS = [
   { value: "open", label: "주차 중" },
@@ -51,8 +52,9 @@ export default function Unauthorized() {
       const processorLabel = processor?.user_name || processor?.username || "관리자";
       toast(`출차 처리되었습니다. 처리자: ${processorLabel}`);
       load();
-    } catch {
-      toast("처리에 실패했습니다.", "err");
+    } catch (err) {
+      logError("unauthorized-close", err);
+      toast(errorMessage(err, "출차 처리하지 못했습니다."), "err");
     }
   }
 

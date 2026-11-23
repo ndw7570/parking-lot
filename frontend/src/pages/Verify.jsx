@@ -8,6 +8,7 @@ import { canScanPlate, scanPlate } from "../lib/plateScanner";
 import { isDemo } from "../api/config";
 import { PlateScanDemo } from "../components/PlateScanDemo";
 import { decideVerdict, VERDICT, PARKING_TYPE, plateSearchParams } from "../lib/domain";
+import { errorMessage, logError } from "../lib/apiError";
 
 // 조회된 차량의 parking_type 을 그대로 판정으로 매핑한다.
 //   무단주차 → 무단주차 / 거주주차 → 거주주차 / 방문주차 → 방문주차 / 지정주차 → 지정주차
@@ -95,11 +96,11 @@ export default function Verify() {
         matches = await vehicleApi.list(plateSearchParams(q));
       } catch (err) {
         // 400 등 조회 실패 → '미등록'이 아니라 에러 메시지로 구분한다.
-        const status = err.response?.status;
+        logError("verify-lookup", err);
         setError(
-          status === 400
+          err.response?.status === 400
             ? "차량번호 조회를 사용할 수 없습니다. (서버가 번호 일부 검색을 지원하지 않음)"
-            : "차량번호 조회에 실패했습니다. 잠시 후 다시 시도해 주세요."
+            : errorMessage(err, "차량번호를 조회하지 못했습니다.")
         );
         return;
       }

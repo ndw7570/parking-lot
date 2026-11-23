@@ -5,6 +5,7 @@ import { Field, TextInput } from "../components/form";
 import { authApi } from "../api/auth";
 import { userProfileApi } from "../api/resources";
 import { formatPhoneNumber, normalizeId } from "../lib/domain";
+import { errorMessage, logError } from "../lib/apiError";
 
 export default function Register() {
   const nav = useNavigate();
@@ -38,7 +39,8 @@ export default function Register() {
     } catch (err) {
       setBusy(false);
       const data = err.response?.data;
-      return toast(data?.username?.[0] || data?.password?.[0] || data?.detail || "가입에 실패했습니다.", "err");
+      logError("register", err);
+      return toast(data?.username?.[0] || data?.password?.[0] || errorMessage(err, "가입하지 못했습니다."), "err");
     }
     try {
       // 2) create the matching resident profile (user_id === 아이디)

@@ -6,6 +6,7 @@ import { Field, TextInput } from "../components/form";
 import { useToast } from "../components/ui";
 import { IconCar } from "../components/Icons";
 import { normalizeId } from "../lib/domain";
+import { errorMessage, logError } from "../lib/apiError";
 
 export default function Login() {
   const nav = useNavigate();
@@ -36,11 +37,12 @@ export default function Login() {
       await authApi.login(username.trim(), password);
       nav("/", { replace: true });
     } catch (err) {
-      const status = err.response?.status;
+      logError("login", err);
+      // 로그인 화면의 401 은 "만료"가 아니라 "틀림"이다.
       toast(
-        status === 401
+        err.response?.status === 401
           ? "아이디 또는 비밀번호가 올바르지 않습니다."
-          : "로그인에 실패했습니다. 네트워크를 확인해 주세요.",
+          : errorMessage(err, "로그인하지 못했습니다."),
         "err"
       );
     } finally {

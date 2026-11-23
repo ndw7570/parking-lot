@@ -22,7 +22,7 @@ import {
   minutesUntil,
 } from "../lib/domain";
 import { getCurrentUserId, authApi, isAdminUser } from "../api/auth";
-import { backendErrorMessage } from "../lib/apiError";
+import { errorMessage, logError } from "../lib/apiError";
 
 // Registration modes, driven by ?type=
 const MODES = {
@@ -520,13 +520,8 @@ export default function VehicleForm() {
       nav(`/vehicles/${vehicle.vehicle_id}`, { replace: true });
     } catch (err) {
       // 백엔드가 주는 메시지 우선(활성 방문권/유효시간 400 등).
-      const data = err.response?.data;
-      const backendMsg = backendErrorMessage(data);
-      toast(
-        backendMsg ||
-          (data ? "저장 실패: 입력값을 확인해 주세요." : "네트워크 오류로 저장하지 못했습니다."),
-        "err"
-      );
+      logError("vehicle-save", err);
+      toast(errorMessage(err, "차량을 저장하지 못했습니다."), "err");
     } finally {
       setBusy(false);
     }

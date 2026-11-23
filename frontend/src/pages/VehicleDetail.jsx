@@ -5,6 +5,7 @@ import { IconCar, IconPhone } from "../components/Icons";
 import { dongHoApi, unauthorizedApi, vehicleApi, visitantApi } from "../api/resources";
 import { authApi, meIdentity, isAdminUser } from "../api/auth";
 import { decideVerdict, formatDate, formatDateTime, normalizePlateNumber, visitExpiry, minutesUntil, formatRemaining, PARKING_TYPE, VERDICT } from "../lib/domain";
+import { errorMessage, logError } from "../lib/apiError";
 
 export default function VehicleDetail() {
   const { id } = useParams();
@@ -79,8 +80,9 @@ export default function VehicleDetail() {
       await vehicleApi.remove(id);
       toast("삭제되었습니다.");
       nav("/vehicles", { replace: true });
-    } catch {
-      toast("삭제에 실패했습니다.", "err");
+    } catch (err) {
+      logError("vehicle-delete", err);
+      toast(errorMessage(err, "차량을 삭제하지 못했습니다."), "err");
     }
   }
 
@@ -96,8 +98,9 @@ export default function VehicleDetail() {
       setVerdict(decideVerdict(next, [])); // 차주 없음 → 무단주차 판정
       setDongHo(null);
       toast("차주 지정을 해제했습니다. 무단주차로 전환됩니다.");
-    } catch {
-      toast("해제에 실패했습니다.", "err");
+    } catch (err) {
+      logError("vehicle-unassign", err);
+      toast(errorMessage(err, "차주 지정을 해제하지 못했습니다."), "err");
     }
   }
 

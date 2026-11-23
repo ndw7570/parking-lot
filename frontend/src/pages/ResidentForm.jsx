@@ -5,6 +5,7 @@ import { Field, TextInput, TextArea, Segment } from "../components/form";
 import { userProfileApi, dongHoApi } from "../api/resources";
 import { authApi, meIdentity, isAdminUser } from "../api/auth";
 import { formatPhoneNumber, buildUnitNames, normalizeId } from "../lib/domain";
+import { errorMessage, logError } from "../lib/apiError";
 
 function normalizeHoNumber(value = "") {
   const digits = String(value).replace(/\D/g, "").slice(0, 4);
@@ -254,13 +255,8 @@ export default function ResidentForm() {
       nav("/residents", { replace: true });
     } catch (err) {
       // 서버가 이유를 주면(예: 이미 다른 세대에 연결된 거주민) 그대로 보여 준다.
-      const reason = err.response?.data?.user?.[0] || err.response?.data?.detail;
-      toast(
-        err.response?.status === 400
-          ? reason || "저장 실패: 이미 등록된 세대이거나 입력값 오류입니다."
-          : "네트워크 오류로 저장하지 못했습니다.",
-        "err"
-      );
+      logError("resident-save", err);
+      toast(err.response?.data?.user?.[0] || errorMessage(err, "거주민 정보를 저장하지 못했습니다."), "err");
     } finally {
       setBusy(false);
     }

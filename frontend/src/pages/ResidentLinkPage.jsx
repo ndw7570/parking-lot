@@ -5,6 +5,7 @@ import { Field, TextInput } from "../components/form";
 import { IconHome, IconSearch, IconPhone, IconUsers } from "../components/Icons";
 import { authApi, meIdentity, isAdminUser } from "../api/auth";
 import { dongHoApi, userProfileApi } from "../api/resources";
+import { errorMessage, logError } from "../lib/apiError";
 
 export default function ResidentLinkPage() {
   const { id } = useParams();
@@ -153,8 +154,7 @@ export default function ResidentLinkPage() {
         data,
         err,
       });
-      const label = err.response?.status ?? err.code ?? err.message ?? "네트워크";
-      toast(`저장 실패 (${label})${detail ? " · " + detail : ""}`, "err");
+      toast(detail && err.response?.status === 400 ? detail : errorMessage(err, "현재 거주민을 저장하지 못했습니다."), "err");
     } finally {
       setSaving(false);
     }
