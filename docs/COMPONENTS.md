@@ -2,7 +2,7 @@
 
 > 2026-11-23 정리. 토큰 이름·값은 `../DESIGN.md` frontmatter 가 정본이다. 여기는 **부품 하나하나의 쓰임·상태·문제**를 적는다.
 > 코드: React `frontend/src/components/ui.jsx`·`form.jsx`, 클래스 `frontend/src/styles/app.css`. 코드는 복사하지 않고 위치만 적는다.
-> 감사 근거: `.impeccable/` 의 감사 보고(2026-11-23, 배포 화면 데모 모드 + 탐지기). "감사" 칸의 P1~P3 은 그 보고의 등급.
+> 감사 근거: `design-audit-2026-11-23.md`(2026-11-23, 배포 화면 데모 모드 + 탐지기). "감사" 칸의 P1~P3 은 그 보고의 등급.
 > 이전 자리: agent-management `projects/P005-parking-lot/design/components/catalog.md` (여기로 옮김).
 
 ## 한눈에
