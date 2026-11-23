@@ -304,9 +304,22 @@ export default function Verify() {
             </a>
           )}
 
-          {notFound && (
+          {/* 무단·만료·미등록이면 누구나 관리자에게 사진으로 신고한다(P005-025). */}
+          {!result.allowed && (
             <button
               className="btn danger"
+              style={{ marginTop: 12 }}
+              onClick={() =>
+                nav(`/reports/new?plate=${encodeURIComponent(result.vehicle?.plate_number || plate.trim())}`)
+              }
+            >
+              <IconCamera width={19} height={19} />관리자에게 신고
+            </button>
+          )}
+
+          {notFound && (
+            <button
+              className="btn ghost"
               style={{ marginTop: 12 }}
               onClick={() =>
                 nav(`/unauthorized/new?plate=${encodeURIComponent(plate.trim())}`)

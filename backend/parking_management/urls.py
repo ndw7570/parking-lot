@@ -7,6 +7,7 @@ from parking_management.views.parking.dong_ho import DongHoViewSet
 from parking_management.views.parking.visitant import VisitantViewSet
 from parking_management.views.parking.attachment_file import AttachmentFileViewSet
 from parking_management.views.parking.unauthorized_parking_record import UnauthorizedParkingRecordViewSet
+from parking_management.views.parking.report import ReportViewSet
 from parking_management.views.posts.post import PostViewSet
 from parking_management.views.posts.comment import CommentViewSet
 from parking_management.views.posts.post_like import PostLikeViewSet
@@ -21,6 +22,7 @@ router.register(r'dong-ho', DongHoViewSet)
 router.register(r'visitant', VisitantViewSet)
 router.register(r'attachment-file', AttachmentFileViewSet)
 router.register(r'unauthorized-parking-record', UnauthorizedParkingRecordViewSet)
+router.register(r'report', ReportViewSet, basename='report')
 
 # posts
 router.register(r'post', PostViewSet)

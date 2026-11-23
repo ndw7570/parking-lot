@@ -15,6 +15,9 @@ class AttachmentFile(SoftDeleteModel):
     created_at = models.DateField(null=True, blank=True, db_comment="생성일")
     updated_at = models.DateField(null=True, blank=True, db_comment="수정일")
     remarks = models.TextField(null=True, blank=True, db_comment="비고")
+    # 신고 사진(P005-025): 누가 언제 올렸나. 보관 기한·남용 제한에 쓴다.
+    uploaded_by = models.CharField(max_length=200, null=True, blank=True, db_comment="올린 사람 아이디")
+    uploaded_at = models.DateTimeField(null=True, blank=True, db_comment="올린 시각")
     is_deleted = models.BooleanField(null=False, blank=True, db_comment="삭제여부")
 
     class Meta:

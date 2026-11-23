@@ -8,6 +8,7 @@ import {
   visitantApi,
   unauthorizedApi,
   dongHoApi,
+  reportApi,
 } from "../api/resources";
 import { homeStatus, buildUnitNames } from "../lib/domain";
 
@@ -118,6 +119,7 @@ export default function Home() {
       ) : (
         <>
           <VerifyEntry onOpen={() => nav("/verify")} onScan={() => nav("/verify?scan=1")} />
+          <NewReportsCard onOpen={() => nav("/reports")} />
 
           <div className="kpi-row">
             <KPI n={stats.total} l="등록 차량" onClick={() => nav("/vehicles?filter=all")} />
@@ -183,6 +185,35 @@ export default function Home() {
 
 // 홈 맨 위의 권한 조회 입구. 이 앱에서 가장 자주 하는 일이라 스크롤 없이 첫 화면에 둔다.
 // 검색창 모양이라 "여기에 번호를 넣는다"가 바로 읽힌다. 앱에서는 오른쪽 카메라로 곧장 촬영.
+// 관리자에게만: 아직 아무도 안 본 신고(접수 상태) 수. 0건이면 자리를 차지하지 않는다(P005-025).
+function NewReportsCard({ onOpen }) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    let alive = true;
+    const load = () =>
+      reportApi
+        .summary()
+        .then((s) => alive && setCount(s.is_admin ? s.new : 0))
+        .catch(() => {});
+    load();
+    const timer = setInterval(load, 30000);
+    return () => {
+      alive = false;
+      clearInterval(timer);
+    };
+  }, []);
+  if (!count) return null;
+  return (
+    <button type="button" className="report-alert" onClick={onOpen}>
+      <IconAlert width={18} height={18} />
+      <span>
+        새 무단주차 신고 <b>{count}건</b>
+      </span>
+      <IconChevron width={16} height={16} />
+    </button>
+  );
+}
+
 function VerifyEntry({ onOpen, onScan }) {
   const label = (
     <>

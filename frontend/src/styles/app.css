@@ -1040,3 +1040,78 @@ button.verify-cta-go:focus-visible {
     transition-duration: 0.001ms !important;
   }
 }
+
+/* 무단주차 사진 신고 (P005-025) */
+.report-photo {
+  display: block;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--navy-900);
+  aspect-ratio: 4 / 3;
+}
+.report-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.report-photo-empty {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--on-navy-muted);
+  font-size: 13px;
+}
+.report-notice {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+.form-error {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.report-alert {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0 0;
+  padding: 12px 14px;
+  border: 1px solid var(--danger);
+  border-radius: 12px;
+  background: var(--danger-soft);
+  color: var(--danger);
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+.report-alert span {
+  flex: 1;
+}
+.report-alert:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+.bell-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+}
+.bell-item:hover {
+  background: var(--paper);
+}
