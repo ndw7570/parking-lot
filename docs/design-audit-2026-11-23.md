@@ -177,3 +177,8 @@ P1 3건을 고쳤다. P2·P3 는 그대로.
 | 상태 배지 | 배지 글자 전용 토큰 `--ok-text` #157a44 · `--warn-text` #a14a07 · `--danger-text` #b32e2c. 판정 카드 색은 그대로 | 초록 4.8 · 주황 5.3 · 빨강 5.3 |
 
 대비는 WCAG 공식으로 계산했다. 실제 화면 재감사(`/impeccable audit`)는 아직 안 했다.
+
+P2 2건(포커스 표시 약함, 선택 상태가 색으로만)도 고쳤다(2026-11-26).
+
+- 버튼·아이콘 버튼·칩·세그먼트·탭·목록 행·FAB·빠른 등록 타일에 `:focus-visible` 시안 2px. 브라우저(Edge)에서 Tab 으로 옮겨 확인했다.
+- ChipPicker·Segment 에 `aria-pressed`, Segment 묶음에 `role="group"` + 이름. 테스트 `frontend/src/components/form.test.jsx` 4건.

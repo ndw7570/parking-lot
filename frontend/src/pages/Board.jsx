@@ -49,7 +49,7 @@ export default function Board() {
 
   return (
     <Shell bar={<AppBar sub="Board" title="게시판" right={<AccountButton />} />}>
-      <Segment options={TYPES} value={type} onChange={setType} />
+      <Segment options={TYPES} value={type} onChange={setType} label="글 종류" />
 
       {loading ? (
         <Loading />

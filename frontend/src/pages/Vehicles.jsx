@@ -97,7 +97,7 @@ export default function Vehicles() {
           onChange={(e) => setQ(e.target.value)}
         />
       </div>
-      <Segment options={FILTERS} value={filter} onChange={setFilter} />
+      <Segment options={FILTERS} value={filter} onChange={setFilter} label="차량 걸러보기" />
 
       {loading ? (
         <Loading />

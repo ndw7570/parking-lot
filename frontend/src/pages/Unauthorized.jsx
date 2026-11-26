@@ -60,7 +60,7 @@ export default function Unauthorized() {
 
   return (
     <Shell bar={<AppBar sub="Unauthorized" title="무단주차" right={<AccountButton />} />}>
-      <Segment options={VIEWS} value={view} onChange={setView} />
+      <Segment options={VIEWS} value={view} onChange={setView} label="무단주차 걸러보기" />
 
       {loading ? (
         <Loading />

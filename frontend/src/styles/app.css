@@ -178,6 +178,20 @@ textarea {
   overflow-y: auto;
 }
 
+/* 키보드 포커스 (감사 P2, WCAG 2.4.7). 입력란과 같은 시안 2px.
+   마우스·터치에는 안 보이고 키보드로 옮길 때만 보인다(:focus-visible). */
+.btn:focus-visible,
+.icon-btn:focus-visible,
+.chip:focus-visible,
+.segment button:focus-visible,
+.tabbar a:focus-visible,
+.list-row:focus-visible,
+.fab:focus-visible,
+.action-tile:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
 /* --------------------------------------------------------------- Bottom nav */
 .tabbar {
   position: fixed;

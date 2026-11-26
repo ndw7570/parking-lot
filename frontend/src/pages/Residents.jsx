@@ -137,7 +137,7 @@ export default function Residents() {
           onChange={(e) => setQ(e.target.value)}
         />
       </div>
-      <Segment options={VIEWS} value={view} onChange={setView} />
+      <Segment options={VIEWS} value={view} onChange={setView} label="거주민 걸러보기" />
 
       {loading ? (
         <Loading />

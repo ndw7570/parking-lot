@@ -286,7 +286,7 @@ export default function ResidentForm() {
           </div>
         )}
         <Field label="거주 유형">
-          <Segment options={TERMS} value={term} onChange={setTerm} />
+          <Segment options={TERMS} value={term} onChange={setTerm} label="거주 유형" />
         </Field>
 
         {isEdit ? (

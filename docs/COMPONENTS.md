@@ -32,9 +32,9 @@
 | Loading / Empty | 공용 부품 | `ui.jsx` | - |
 | Badge | 공용 부품 | `ui.jsx` | - |
 | Field / TextInput / TextArea | 공용 부품 | `form.jsx` | P2 힌트 11.5px |
-| ChipPicker | 공용 부품 | `form.jsx` | P2 `aria-pressed` 없음 |
-| Segment | 공용 부품 | `form.jsx` | P2 37px, 선택이 색으로만 |
-| Button | 공용 클래스 | `.btn` | P2 포커스 표시 없음 |
+| ChipPicker | 공용 부품 | `form.jsx` | - |
+| Segment | 공용 부품 | `form.jsx` | P2 칸 높이 37px |
+| Button | 공용 클래스 | `.btn` | - |
 | IconButton | 공용 클래스 | `.icon-btn` `.phone-action` | P2 38~40px |
 | FAB | 공용 클래스 | `.fab` | - |
 | Card | 공용 클래스 | `.card` | P3 카드 안 카드 |
@@ -102,6 +102,8 @@
 
 ## 행동
 
+**키보드 포커스(공통)**: `.btn` `.icon-btn` `.chip` `.segment button` `.tabbar a` `.list-row` `.fab` `.action-tile` 은 키보드로 옮기면 시안 2px 외곽선(`:focus-visible`, 2026-11-26). 마우스·터치에는 안 보인다. 새 버튼류 클래스를 만들면 이 목록에 넣는다.
+
 ### Button (`.btn`)
 - 목적: 화면에서 할 일을 크기와 색으로 줄 세운다.
 - 변형과 쓰임:
@@ -148,11 +150,14 @@
 ### ChipPicker (`.chip`)
 - 목적: 몇 개 안 되는 값 중 하나(차종·색상·위치·유효시간)를 한 번 눌러 고른다.
 - 상태: 기본 흰 바탕·`slate-muted` / `on` 네이비 채움·흰 글자.
+- 접근성: 고른 칩에 `aria-pressed="true"`(2026-11-26). 화면 읽기 프로그램이 무엇이 골라졌는지 말한다.
 - 쓰지 말 때: 값이 8개를 넘거나 자주 바뀌면 select. 목록 걸러보기는 Segment.
 
 ### Segment (`.segment`)
 - 목적: 목록 걸러보기(전체/지정/방문/미등록 등). 고르면 바로 목록이 바뀐다.
-- 쓰지 말 때: 저장할 값을 고를 때. 그건 ChipPicker.
+- 쓰는 법: `<Segment options value onChange label="차량 걸러보기" />`. `label` 은 묶음 이름(`role="group"` 의 `aria-label`)이라 꼭 넣는다.
+- 접근성: 칸마다 `aria-pressed`, `type="button"`(폼 안에서 눌러도 제출 안 됨). tablist 가 아닌 이유는 방향키 이동·tabpanel 연결을 약속하지 않기 때문.
+- 쓰지 말 때: 저장할 값을 고를 때는 보통 ChipPicker. 예외로 거주민 폼의 "거주 유형"(2개)은 Segment 를 쓴다.
 
 ### SearchBar (`.searchbar`)
 - 목적: 목록 안 찾기. 아이콘 + 테두리 없는 입력, 반경 13.
