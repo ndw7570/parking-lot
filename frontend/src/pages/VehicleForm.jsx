@@ -197,7 +197,7 @@ export default function VehicleForm() {
     return owners.find((o) => String(o.user_id) === uid) || null;
   }, [owners, ownerLookup, form.user]);
 
-  // 이미 등록된 차량 수 안내 — 이 차주의 '지정주차' 차량만 카운팅(방문·무단 제외).
+  // 이미 등록된 차량 수 안내 — 이 차주의 '거주주차' 차량만 카운팅(방문·무단 제외).
   // 지금 편집/불러오기 중인 차량 자신은 제외(그 외 이미 등록된 대수). 대소문자 무시.
   const ownerVehicleCount = useMemo(() => {
     const uid = normalizeId(form.user);

@@ -39,7 +39,7 @@ export default function VehicleDetail() {
         if (alive) {
           setVehicle(v);
           setVerdict(decideVerdict(v, visitants));
-          // 초과 카운팅은 '지정주차'(소유+비방문+비무단) 차량만.
+          // 초과 카운팅은 '거주주차'(소유+비방문+비무단) 차량만.
           setOwnerVehicleCount(
             v?.user
               ? (allVehicles || []).filter(

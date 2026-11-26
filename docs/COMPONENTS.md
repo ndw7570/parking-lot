@@ -44,7 +44,7 @@
 | SearchBar | 공용 클래스 | `.searchbar` | - |
 | TextLink | 공용 클래스 | `.text-link` | - |
 | ActionTile | 공용 클래스 | `.action-tile` | P3 로그인 아이콘 타일 |
-| VerdictCard | 화면 전용 | `Verify.jsx` VerdictCard, `VehicleDetail.jsx` 는 `.verdict` 직접 | P2 이름 불일치, 주황 카드 13px 글자 2.8 |
+| VerdictCard | 화면 전용 | `Verify.jsx` VerdictCard, `VehicleDetail.jsx` 는 `.verdict` 직접 | 주황 카드 13px 글자 2.8 |
 | KPI | 화면 전용 | `Home.jsx` KPI, `.kpi` | - |
 | VerifyEntry | 화면 전용 | `Home.jsx`, `.verify-cta` | - |
 | MiniBars | 화면 전용 | `Home.jsx`, `.bars` | P3 시안 그라데이션 |
@@ -172,7 +172,8 @@
 - 구성: eyebrow 11 → 결과 30/700 → 이유 13 → 번호판 알약(Space Grotesk).
 - 구분: **화면 전용.** `Verify.jsx` 에 컴포넌트, `VehicleDetail.jsx` 는 클래스만 직접 쓴다. 세 번째로 쓰게 되면 `components/` 로 옮긴다.
 - 주의: 신호등 3색은 판정에만. ok=허용·거주 중, warn=조건부·방문·예정·종료, danger=무단·빈집.
-- 남은 감사: 같은 차를 판정 카드는 "거주주차", 상세는 "지정주차"로 부른다. 주황 카드 위 13px 흰 글자 대비 2.8.
+- 이름: 차주가 있는 차는 어느 화면이든 "거주주차"(2026-11-26, P005-031). 저장값 "지정주차"(옛 값)도 같은 이름·같은 허용.
+- 남은 감사: 주황 카드 위 13px 흰 글자 대비 2.8.
 
 ### Badge
 - 목적: 목록 한 줄의 상태(지정·방문·빈집 등)를 오른쪽에 짧게.

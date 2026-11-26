@@ -11,17 +11,17 @@ import { decideVerdict, VERDICT, PARKING_TYPE, plateSearchParams } from "../lib/
 import { errorMessage, logError } from "../lib/apiError";
 
 // 조회된 차량의 parking_type 을 그대로 판정으로 매핑한다.
-//   무단주차 → 무단주차 / 거주주차 → 거주주차 / 방문주차 → 방문주차 / 지정주차 → 지정주차
-function verdictFromType(parkingType) {
+//   무단주차 → 무단주차 / 거주주차·지정주차 → 거주주차 / 방문주차 → 방문주차
+//   지정주차는 앱이 저장하지 않는 옛 값이라 목록·상세와 같은 이름으로 보인다(P005-031).
+export function verdictFromType(parkingType) {
   switch (parkingType) {
     case PARKING_TYPE.UNAUTHORIZED:
       return { verdict: VERDICT.UNAUTHORIZED, label: "무단주차", sub: "무단주차 차량", allowed: false };
     case PARKING_TYPE.VISITOR:
       return { verdict: VERDICT.VISITOR, label: "방문주차", sub: "등록된 방문 차량", allowed: true };
     case PARKING_TYPE.RESIDENT:
-      return { verdict: VERDICT.DESIGNATED, label: "거주주차", sub: "거주민 등록 차량", allowed: true };
     case PARKING_TYPE.DESIGNATED:
-      return { verdict: VERDICT.DESIGNATED, label: "지정주차", sub: "지정 차량", allowed: true };
+      return { verdict: VERDICT.DESIGNATED, label: "거주주차", sub: "거주민 등록 차량", allowed: true };
     default:
       return { verdict: VERDICT.UNAUTHORIZED, label: parkingType || "미등록", sub: "미등록 차량", allowed: false };
   }

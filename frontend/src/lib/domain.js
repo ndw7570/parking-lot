@@ -78,8 +78,9 @@ export const VERDICT = {
 };
 
 export const VERDICT_META = {
+  // 화면 이름은 "거주주차" 하나(P005-031). 앱은 "지정주차"를 저장하지 않고, 옛 값도 같은 허용이다.
   [VERDICT.DESIGNATED]: {
-    label: "지정주차",
+    label: "거주주차",
     sub: "거주민 등록 차량",
     tone: "ok",
     allowed: true,
@@ -154,7 +155,7 @@ export function decideVerdict(vehicle, visitants = [], now = new Date()) {
     return EXPIRED_VISIT;
   }
 
-  // Vehicle has an owner (user_id) → 지정주차
+  // Vehicle has an owner (user_id) → 거주주차(허용)
   if (hasUser) {
     return { verdict: VERDICT.DESIGNATED, ...VERDICT_META[VERDICT.DESIGNATED] };
   }

@@ -90,6 +90,16 @@ describe("decideVerdict", () => {
     expect(decideVerdict(owned, [], NOW).verdict).toBe(VERDICT.DESIGNATED);
   });
 
+  // P005-031: 같은 차를 화면마다 "거주주차"/"지정주차"로 다르게 부르던 것을 "거주주차" 하나로.
+  // 앱은 "지정주차"를 저장하지 않는다. 옛 데이터의 "지정주차"도 같은 허용·같은 이름으로 보인다.
+  it.each([PARKING_TYPE.RESIDENT, PARKING_TYPE.DESIGNATED])("owner vehicle (%s) is labelled 거주주차", (type) => {
+    const owned = vehicle({ user: "resident1", parking_type: type });
+    const result = decideVerdict(owned, [], NOW);
+
+    expect(result.label).toBe("거주주차");
+    expect(result.allowed).toBe(true);
+  });
+
   it("no vehicle → 무단주차", () => {
     expect(decideVerdict(null, [], NOW).verdict).toBe(VERDICT.UNAUTHORIZED);
   });

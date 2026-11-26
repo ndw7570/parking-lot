@@ -8,7 +8,7 @@ import { decideVerdict, VERDICT, visitExpiry, minutesUntil, formatRemaining } fr
 
 const FILTERS = [
   { value: "all", label: "전체" },
-  { value: VERDICT.DESIGNATED, label: "지정" },
+  { value: VERDICT.DESIGNATED, label: "거주" },
   { value: VERDICT.VISITOR, label: "방문" },
   { value: VERDICT.UNAUTHORIZED, label: "미등록" },
 ];
@@ -53,7 +53,7 @@ export default function Vehicles() {
   }, []);
 
   const rows = useMemo(() => {
-    // 차주(user)별 '지정주차' 차량 수 → 초과 표시(지정주차만 카운팅).
+    // 차주(user)별 '거주주차' 차량 수 → 초과 표시(거주주차만 카운팅).
     const designatedCounts = {};
     vehicles.forEach((v) => {
       if (v.is_deleted || !v.user) return;
