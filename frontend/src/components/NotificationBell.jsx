@@ -138,7 +138,7 @@ export function NotificationBell() {
               방문차량 출차 임박
             </div>
             {items.length === 0 ? (
-              <div style={{ padding: "10px 8px", fontSize: 13, color: "var(--text-faint)" }}>
+              <div style={{ padding: "10px 8px", fontSize: 13, color: "var(--text-muted)" }}>
                 임박한 방문차량이 없습니다.
               </div>
             ) : (

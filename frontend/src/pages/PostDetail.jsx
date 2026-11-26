@@ -180,7 +180,7 @@ function ViewPost({ id }) {
         </p>
         <div
           className="row"
-          style={{ gap: 14, marginTop: 14, color: "var(--text-faint)", fontSize: 12.5 }}
+          style={{ gap: 14, marginTop: 14, color: "var(--text-muted)", fontSize: 12.5 }}
         >
           <span>조회 {post.view_count || 0}</span>
           <span>댓글 {comments.length}</span>
