@@ -25,6 +25,9 @@ colors:
   caution-amber-mist: "#fbf0da"
   stop-red: "#d6413f"
   stop-red-mist: "#fbe6e5"
+  go-green-text: "#157a44"
+  caution-amber-text: "#a14a07"
+  stop-red-text: "#b32e2c"
   segment-well: "#eef1f7"
 typography:
   display:
@@ -109,6 +112,7 @@ components:
     textColor: "{colors.deep-ink-text}"
     rounded: "{rounded.field}"
     padding: "13px 14px"
+    fontSize: "16px"
   chip:
     backgroundColor: "{colors.card-white}"
     textColor: "{colors.slate-muted}"
@@ -216,13 +220,14 @@ components:
 - **Go Green** (`go-green`) / **Go Green Mist**: 허용 · 지정·거주주차 · 거주 중.
 - **Caution Amber** (`caution-amber`) / **Caution Amber Mist**: 조건부 · 방문주차 · 입주 예정.
 - **Stop Red** (`stop-red`) / **Stop Red Mist**: 불허 · 무단주차 · 빈집 · 삭제.
+- **… Text** (`go-green-text` · `caution-amber-text` · `stop-red-text`, 코드 `--ok-text` 등): Mist 바탕 위 작은 글자(배지)용 진한 톤. 기본색은 Mist 위에서 대비 2.4~3.7 이라 글자에 쓰지 않는다.
 
 ### Neutral
 - **Cool Paper** (`cool-paper`): 페이지 바탕.
 - **Card White** (`card-white`): 카드·입력·고스트 버튼 바탕.
 - **Hairline** (`hairline`): 카드 테두리, 목록 구분선.
 - **Field Line** (`field-line`): 입력·칩·고스트 버튼 테두리.
-- **Deep Ink Text** (`deep-ink-text`): 본문. **Slate Muted** (`slate-muted`): 보조 설명. **Faded Slate** (`faded-slate`): 힌트·비활성 탭·섹션 제목 - 지금 대비 2.7:1 로 본문용 기준 미달(감사 P1).
+- **Deep Ink Text** (`deep-ink-text`): 본문. **Slate Muted** (`slate-muted`): 보조 설명. **Faded Slate** (`faded-slate`): 장식 아이콘 전용(대비 2.7:1). 힌트·비활성 탭·섹션 제목은 2026-11-26 부터 Slate Muted(5.1~5.4:1).
 - **Ink** (`ink`): 토스트 바탕.
 
 ### Named Rules
@@ -241,7 +246,7 @@ components:
 - **Display** (700, 30px, -0.02em): 판정 결과("무단주차") 한 곳.
 - **Headline** (Space Grotesk 700, 22px, 줄간 1): KPI 숫자.
 - **Title** (600, 16px): 앱바 제목. 로그인 제목은 20px.
-- **Body** (400, 15px, 1.5): 본문·입력·버튼.
+- **Body** (400, 15px, 1.5): 본문·버튼. 입력란은 16px(iOS 포커스 확대 방지).
 - **List** (600, 14.5px): 목록 제목, 타일 제목.
 - **Label** (600, 12px, 0.06em, 대문자): 섹션 제목.
 - **Caption** (600, 11.5px): 배지·힌트·메타. 이보다 작게 쓰지 않는다.
@@ -292,9 +297,9 @@ components:
 - **KPI 타일:** 11px 반경, 가운데 정렬, Space Grotesk 숫자 + 10.5px 라벨.
 
 ### Inputs / Fields
-- **Style:** 흰 바탕, Field Line 테두리, 12px 반경, 13/14px 여백, 15px.
+- **Style:** 흰 바탕, Field Line 테두리, 12px 반경, 13/14px 여백, 16px.
 - **Focus:** 테두리 Signal Cyan + 3px Signal Cyan Mist 링.
-- **Label / Hint:** 라벨 위, 힌트 아래 11.5px Faded Slate(대비 미달).
+- **Label / Hint:** 라벨 위, 힌트 아래 11.5px Slate Muted.
 
 ### Navigation
 - **App bar:** 네이비 그라데이션, 제목 16px 600 + 위에 11px 대문자 영문 부제(Parking Desk, VERIFY …), 오른쪽 38px 아이콘 버튼(흰 10% 바탕): 알림 벨, 내 정보 / 홈.
@@ -305,7 +310,7 @@ components:
 화면에서 가장 큰 면. 판정 색 그라데이션(어두운 쪽 → 기본색, 135deg) 위에 흰 글자: 작은 "주차 판정", 30px 결과, 이유 한 줄, 번호판 알약. 오른쪽 위 반투명 원 하나. 바로 아래 차량 상세 카드와 행동 버튼이 이어진다.
 
 ### Status Badge
-알약, 11.5px 600, 앞에 점. 판정 3색의 Mist 바탕 + 기본색 글자. 주황 배지는 대비 2.4:1 로 미달(감사 P1).
+알약, 11.5px 600, 앞에 점. 판정 3색의 Mist 바탕 + `…-text` 진한 톤 글자(대비 4.8~5.3).
 
 ## Do's and Don'ts
 
@@ -321,5 +326,5 @@ components:
 - **Don't** Faded Slate(`faded-slate`)를 읽어야 하는 글자에 쓰지 않는다. 힌트·섹션 제목은 Slate Muted 로.
 - **Don't** 기능하는 글자를 11px 아래로 쓰지 않는다.
 - **Don't** 카드 안에 카드를 겹치지 않는다(지금 목록 카드 안 카드 9곳).
-- **Don't** 확대를 막지 않는다(`user-scalable=no` 는 WCAG 1.4.4 위반).
+- **Don't** 확대를 막지 않는다(`user-scalable=no` 는 WCAG 1.4.4 위반, 2026-11-26 제거). 입력란 16px 아래로 줄이지 않는다.
 - **Don't** 같은 판정을 화면마다 다른 이름으로 부르지 않는다(지금 "거주주차"/"지정주차").
