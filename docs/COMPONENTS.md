@@ -21,9 +21,9 @@
 | 부품 | 구분 | 코드 | 남은 감사 |
 |---|---|---|---|
 | Shell | 공용 부품 | `ui.jsx` | - |
-| AppBar | 공용 부품 | `ui.jsx` | P2 아이콘 버튼 38px |
-| TabBar | 공용 부품 | `ui.jsx` | P2 라벨 10.5px |
-| DemoBanner | 공용 부품(Shell 안) | `ui.jsx` | P2 [로그인] 40×22 |
+| AppBar | 공용 부품 | `ui.jsx` | - |
+| TabBar | 공용 부품 | `ui.jsx` | - |
+| DemoBanner | 공용 부품(Shell 안) | `ui.jsx` | - |
 | AccountButton | 공용 부품 | `ui.jsx` | - |
 | NotificationBell | 공용 부품 | `NotificationBell.jsx` | P2 인라인 스타일·토큰 밖 색 |
 | NativeBackHandler | 공용 부품(화면 없음) | `NativeBackHandler.jsx` | - |
@@ -33,19 +33,19 @@
 | Badge | 공용 부품 | `ui.jsx` | - |
 | Field / TextInput / TextArea | 공용 부품 | `form.jsx` | P2 힌트 11.5px |
 | ChipPicker | 공용 부품 | `form.jsx` | - |
-| Segment | 공용 부품 | `form.jsx` | P2 칸 높이 37px |
+| Segment | 공용 부품 | `form.jsx` | - |
 | Button | 공용 클래스 | `.btn` | - |
-| IconButton | 공용 클래스 | `.icon-btn` `.phone-action` | P2 38~40px |
+| IconButton | 공용 클래스 | `.icon-btn` `.phone-action` | - |
 | FAB | 공용 클래스 | `.fab` | - |
 | Card | 공용 클래스 | `.card` | P3 카드 안 카드 |
-| ListRow | 공용 클래스 | `.list-row` `.avatar` | P2 메타 줄바꿈 깨짐 |
+| ListRow | 공용 클래스 | `.list-row` `.avatar` | - |
 | DetailLine | 공용 클래스 | `.detail-line` | - |
 | SectionTitle | 공용 클래스 | `.section-title` | - |
 | SearchBar | 공용 클래스 | `.searchbar` | - |
 | TextLink | 공용 클래스 | `.text-link` | - |
 | ActionTile | 공용 클래스 | `.action-tile` | P3 로그인 아이콘 타일 |
 | VerdictCard | 화면 전용 | `Verify.jsx` VerdictCard, `VehicleDetail.jsx` 는 `.verdict` 직접 | P2 이름 불일치, 주황 카드 13px 글자 2.8 |
-| KPI | 화면 전용 | `Home.jsx` KPI, `.kpi` | P2 라벨 10.5px |
+| KPI | 화면 전용 | `Home.jsx` KPI, `.kpi` | - |
 | VerifyEntry | 화면 전용 | `Home.jsx`, `.verify-cta` | - |
 | MiniBars | 화면 전용 | `Home.jsx`, `.bars` | P3 시안 그라데이션 |
 | PlateScanDemo | 공용 부품(웹 데모 전용) | `PlateScanDemo.jsx` | - |
@@ -63,14 +63,14 @@
 - 목적: 지금 어느 화면인지와 빠져나갈 길(← 이전 / 홈)을 늘 같은 자리에 둔다.
 - 변형: **탭형**(왼쪽 브랜드 마크, 누르지 않음) / **상세형**(`back`: 왼쪽 ←, 오른쪽 홈).
 - 구성: [마크 또는 ←] [부제 11px 영문 대문자 + 제목 16/600] ··· [알림 벨] [홈 또는 내 정보] [`right` 슬롯]
-- 값: `console-navy → command-navy` 그라데이션, 글자 `on-navy`, 아이콘 버튼 38px·반경 10·흰 10% 바탕.
+- 값: `console-navy → command-navy` 그라데이션, 글자 `on-navy`, 아이콘 버튼 보이는 크기 38px·반경 10·흰 10% 바탕, 누르는 영역 44px(`::after` inset -3px).
 - 주의: ← 는 이전, 홈은 홈. 둘을 섞지 않는다. 로고를 홈 링크로 바꾸는 스위치는 상수 `LOGO_LINKS_HOME`(지금 false).
 - 쓰지 말 때: `right` 슬롯에 행동 버튼을 여러 개 넣지 않는다. 화면 행동은 본문 버튼이나 FAB 로.
 
 ### TabBar
 - 목적: 하루 대부분의 일(홈·차량·거주민·무단주차·게시판)을 엄지 한 번으로 오간다.
 - 상태: 기본 `slate-muted` / 활성 글자 `command-navy` + 아이콘 칸 `signal-cyan-mist` 바탕.
-- 값: 흰 92% + blur 12, 아이콘 칸 40×28 반경 9, 라벨 10.5px.
+- 값: 흰 92% + blur 12, 아이콘 칸 40×28 반경 9, 라벨 11px.
 - 주의: 탭은 5개 고정, 홈이 맨 왼쪽. 탭을 늘리려면 기획(`plan/specs/planning.md` 3장)부터 바꾼다.
 - 쓰지 말 때: 폼·상세 화면(`hideTabs`). 입력 중 탭을 누르면 작성 내용이 사라진다.
 
@@ -117,7 +117,8 @@
 
 ### IconButton (`.icon-btn`)
 - 목적: 글자 없이 뜻이 분명한 행동(전화·뒤로·내 정보)을 작게.
-- 값: 40px 정사각, 반경 12, 흰 바탕·`field-line` 테두리, 글자 `signal-cyan-deep`. 변형 `phone-action`(시안 미스트 바탕).
+- 값: 보이는 크기 40px 정사각(누르는 영역 44px, `::after` inset -2px), 반경 12, 흰 바탕·`field-line` 테두리, 글자 `signal-cyan-deep`. 변형 `phone-action`(시안 미스트 바탕).
+- 주의: 누르는 영역을 `::after` 로 넓혔으니 `.icon-btn` 에 다른 `::after` 를 쓰지 않는다. 아이콘 버튼끼리는 4px 이상 띄운다(영역이 겹치지 않게).
 - 주의: `aria-label` 필수. 앱바 안에서는 AppBar 값으로 덮인다.
 - 쓰지 말 때: 뜻이 아이콘만으로 모호한 행동(예: 출차 처리). 글자 버튼으로.
 
@@ -155,6 +156,7 @@
 
 ### Segment (`.segment`)
 - 목적: 목록 걸러보기(전체/지정/방문/미등록 등). 고르면 바로 목록이 바뀐다.
+- 값: 칸 높이 44px 이상.
 - 쓰는 법: `<Segment options value onChange label="차량 걸러보기" />`. `label` 은 묶음 이름(`role="group"` 의 `aria-label`)이라 꼭 넣는다.
 - 접근성: 칸마다 `aria-pressed`, `type="button"`(폼 안에서 눌러도 제출 안 됨). tablist 가 아닌 이유는 방향키 이동·tabpanel 연결을 약속하지 않기 때문.
 - 쓰지 말 때: 저장할 값을 고를 때는 보통 ChipPicker. 예외로 거주민 폼의 "거주 유형"(2개)은 Segment 를 쓴다.
@@ -182,7 +184,7 @@
 ### KPI (`.kpi-row` `.kpi`)
 - 목적: 홈에서 숫자 하나로 상황 파악(무단·방문·빈집 수). 누르면 그 조건으로 걸러진 목록.
 - 구분: 화면 전용(`Home.jsx`). 거주민 화면은 클래스만 3열로.
-- 변형: `accent`(시안 숫자) / `danger`(빨강 숫자).
+- 변형: `accent`(시안 숫자) / `danger`(빨강 숫자). 라벨 11px.
 
 ### Card (`.card`)
 - 목적: 한 덩어리 정보의 바탕. 흰 바탕, 반경 16, 안쪽 16, 카드 사이 12.
@@ -190,7 +192,8 @@
 
 ### ListRow (`.list-row`)
 - 목적: 목록 한 줄 = 아바타 + 제목·메타 + 오른쪽 배지. 행 전체가 `button`.
-- 남은 감사: 메타 줄의 "초과(2)" 배지가 글자 단위로 줄바꿈되고, 거주민 목록은 "102호미등록"처럼 붙어 보인다.
+- 구조: `.grow` 는 세로 flex. 제목·메타·작은 배지를 `<span>` 으로 넣어도 줄이 나뉜다(행이 `button` 이라 `div` 를 못 넣는다). 2026-11-26 전에는 "102호미등록"처럼 붙고 "초과(2)" 가 꺾였다.
+- 주의: 메타 줄 안 작은 배지는 `white-space: nowrap`.
 
 ### DetailLine (`.detail-line`)
 - 목적: 상세 화면의 라벨 ↔ 값 한 줄. 빈 값은 "-".

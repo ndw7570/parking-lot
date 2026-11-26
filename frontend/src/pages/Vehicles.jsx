@@ -169,6 +169,7 @@ function VehicleRow({ v, onClick }) {
               background: "#fef3c7",
               borderRadius: 999,
               padding: "2px 8px",
+              whiteSpace: "nowrap",
             }}
           >
             초과({v._ownerCount})

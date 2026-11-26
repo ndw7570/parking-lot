@@ -144,6 +144,13 @@ textarea {
   border-radius: 10px;
   display: grid;
   place-items: center;
+  position: relative;
+}
+/* 터치 영역 44px (감사 P2, 장갑·한 손). 보이는 크기는 그대로 두고 누르는 영역만 넓힌다. */
+.appbar .icon-btn::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
 }
 .icon-btn {
   display: inline-flex;
@@ -152,6 +159,7 @@ textarea {
   width: 40px;
   height: 40px;
   border-radius: 12px;
+  position: relative;
   border: 1px solid var(--line-strong);
   background: var(--card);
   color: var(--cyan-deep);
@@ -215,7 +223,7 @@ textarea {
   gap: 3px;
   padding: 6px 2px;
   color: var(--text-muted);
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 500;
   border-radius: 12px;
 }
@@ -280,7 +288,7 @@ textarea {
   color: var(--navy-700);
 }
 .kpi .l {
-  font-size: 10.5px;
+  font-size: 11px;
   color: var(--text-muted);
   margin-top: 5px;
 }
@@ -533,9 +541,17 @@ button.verify-cta-go:focus-visible {
   font-size: 13px;
   flex: none;
 }
+.icon-btn::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+}
+/* 제목·설명이 <span> 이라 버튼 안에서 한 줄로 붙었다("102호미등록", "초과" 꺾임). 세로로 쌓는다. */
 .list-row .grow {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 .list-row .title {
   font-weight: 600;
@@ -758,6 +774,7 @@ button.verify-cta-go:focus-visible {
   border: none;
   background: transparent;
   padding: 9px;
+  min-height: 44px;
   border-radius: 9px;
   font-size: 13px;
   font-weight: 600;
@@ -919,7 +936,8 @@ button.verify-cta-go:focus-visible {
 .demo-banner button {
   border: none;
   background: none;
-  padding: 2px 4px;
+  padding: 10px 8px;
+  margin: -8px -4px;
   font-size: 12px;
   font-weight: 600;
   color: var(--navy-700);
