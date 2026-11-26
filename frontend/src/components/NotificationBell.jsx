@@ -12,7 +12,7 @@ const OVERDUE_FLOOR = -120; // 출차 2시간 초과 지난 건은 숨김
 
 function toneOf(min) {
   if (min <= 5) return "var(--danger)";
-  if (min <= 15) return "#b45309";
+  if (min <= 15) return "var(--warn-text)";
   return "var(--cyan-deep)";
 }
 

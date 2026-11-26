@@ -154,8 +154,8 @@ export default function VehicleDetail() {
             style={{
               fontSize: 12,
               fontWeight: 700,
-              color: "#b45309",
-              background: "#fef3c7",
+              color: "var(--warn-text)",
+              background: "var(--warn-soft)",
               borderRadius: 999,
               padding: "4px 10px",
             }}
